@@ -1,12 +1,25 @@
 #!/bin/bash
 
-# Build the application
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
+# --- Frontend ---
+echo "Installing frontend dependencies..."
+npm install
+
+echo "Building frontend..."
+# Use the existing build script from package.json which also handles copying files
 npm run build
 
-# Copy the _redirects file to the dist directory
-cp public/_redirects dist/
+# --- Backend ---
+echo "Navigating to backend directory..."
+cd backend
 
-# Copy the vercel.json file to the dist directory
-cp vercel.json dist/
+echo "Installing backend dependencies..."
+npm install
+# No backend build step seems necessary based on backend/package.json
 
-echo "Build completed and configuration files copied to dist directory."
+echo "Navigating back to root directory..."
+cd ..
+
+echo "Build process completed for frontend and backend dependencies installed."
