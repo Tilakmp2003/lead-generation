@@ -8,8 +8,8 @@ echo "Installing frontend dependencies..."
 npm install
 
 echo "Building frontend..."
-# Directly build the frontend using npx vite
-npx vite build
+# Directly build the frontend using the binary path
+./node_modules/.bin/vite build
 
 # Copy necessary files after build
 echo "Copying configuration files to dist..."
