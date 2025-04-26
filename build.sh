@@ -7,24 +7,24 @@ set -e
 echo "Installing frontend dependencies..."
 npm install
 
-echo "Building frontend..."
-# Directly build the frontend using the binary path
-./node_modules/.bin/vite build
-
-# Copy necessary files after build
-echo "Copying configuration files to dist..."
-cp public/_redirects dist/
-cp vercel.json dist/
-
 # --- Backend ---
 echo "Navigating to backend directory..."
 cd backend
 
 echo "Installing backend dependencies..."
 npm install
-# No backend build step seems necessary based on backend/package.json
 
 echo "Navigating back to root directory..."
 cd ..
+
+# --- Build Frontend (after all installs) ---
+echo "Building frontend..."
+# Use npx to ensure vite is found in local node_modules
+npx vite build
+
+# Copy necessary files after build
+echo "Copying configuration files to dist..."
+cp public/_redirects dist/
+cp vercel.json dist/
 
 echo "Build process completed for frontend and backend dependencies installed."
