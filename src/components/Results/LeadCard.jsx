@@ -15,7 +15,8 @@ import {
   Button,
   Collapse,
   Paper,
-  Badge
+  Badge,
+  Stack
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -146,36 +147,37 @@ const LeadCard = ({ lead }) => {
         position: 'relative',
         overflow: 'visible',
         borderRadius: 3,
-        boxShadow: '0 6px 16px rgba(0,0,0,0.08)',
+        bgcolor: 'background.paper',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
         transition: 'transform 0.2s, box-shadow 0.2s',
         '&:hover': {
-          transform: 'translateY(-5px)',
-          boxShadow: '0 12px 24px rgba(0,0,0,0.12)'
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
         }
       }}
     >
-      {/* Verification Score Badge */}
+      {/* Verification Badge */}
       <Badge
         sx={{
           position: 'absolute',
-          top: -12,
-          right: 24,
+          top: -8,
+          right: 16,
           zIndex: 1
         }}
         badgeContent={
-          <Tooltip title={`Verification Score: ${lead.verificationScore || 0}%`}>
+          <Tooltip title={`Verification Score: ${lead.verificationScore}%`}>
             <Avatar
               sx={{
-                width: 40,
-                height: 40,
+                width: 32,
+                height: 32,
                 bgcolor: lead.verificationScore >= 75 ? 'success.main' :
                          lead.verificationScore >= 50 ? 'primary.main' :
                          lead.verificationScore >= 25 ? 'warning.main' : 'error.main',
-                boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
                 border: '2px solid white'
               }}
             >
-              <VerifiedIcon fontSize="small" />
+              <VerifiedIcon sx={{ fontSize: '1rem' }} />
             </Avatar>
           </Tooltip>
         }
@@ -183,16 +185,16 @@ const LeadCard = ({ lead }) => {
         <Box sx={{ width: 1, height: 1 }} />
       </Badge>
 
+      {/* Header Section */}
       <CardHeader
         avatar={
           <Avatar
             sx={{
               bgcolor: getAvatarColor(lead.businessType),
-              width: { xs: 50, md: 64 },
-              height: { xs: 50, md: 64 },
-              boxShadow: '0 6px 12px rgba(0,0,0,0.12)',
-              ml: { xs: 0, md: 1 },
-              fontSize: { xs: '1.2rem', md: '1.5rem' }
+              width: { xs: 48, md: 56 },
+              height: { xs: 48, md: 56 },
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+              fontSize: { xs: '1.1rem', md: '1.25rem' }
             }}
           >
             {getInitials(lead.businessName)}
@@ -202,98 +204,189 @@ const LeadCard = ({ lead }) => {
           <Typography
             variant="h6"
             component="h3"
-            fontWeight="bold"
-            noWrap
             sx={{
-              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-              height: { xs: '24px', md: '30px' },
-              display: 'flex',
-              alignItems: 'center'
+              fontWeight: 600,
+              fontSize: { xs: '1rem', md: '1.125rem' },
+              lineHeight: 1.3,
+              mb: 0.5,
+              color: 'text.primary'
             }}
           >
             {lead.businessName}
           </Typography>
         }
         subheader={
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.8 }}>
-            <StoreIcon fontSize="small" sx={{ mr: 0.8, color: 'text.secondary' }} />
-            <Typography variant="body2" color="text.secondary" sx={{
-              fontWeight: 500,
-              fontSize: { xs: '0.75rem', md: '0.875rem' }
-            }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <StoreIcon sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
               {lead.businessType}
             </Typography>
-          </Box>
+          </Stack>
         }
         action={
           <Chip
-            label={lead.address ? lead.address.split(',')[0] : 'Unknown'} // Show only city, with fallback
+            label={lead.address?.split(',')[0] || 'Unknown Location'}
             size="small"
             color="primary"
             sx={{
-              mt: 1.5,
-              mr: { xs: 0.5, md: 1.5 },
-              fontWeight: 500,
-              fontSize: { xs: '0.7rem', md: '0.8rem' },
+              mt: 0.5,
               height: { xs: 24, md: 28 },
+              fontSize: { xs: '0.7rem', md: '0.8rem' },
+              fontWeight: 500,
               background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
               boxShadow: '0 2px 6px rgba(46, 125, 50, 0.2)',
             }}
           />
         }
-        sx={{
-          pb: { xs: 0.5, md: 1 },
-          pt: { xs: 2, md: 3 },
-          px: { xs: 2, md: 3 },
-          height: { xs: '90px', md: '100px' }
-        }}
+        sx={{ p: { xs: 2, md: 2.5 } }}
       />
 
-      <CardContent sx={{
-        pt: { xs: 0.5, md: 1 },
-        flexGrow: 1,
-        px: { xs: 2, md: 3 },
-        pb: { xs: 2, md: 3 },
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <Box sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          justifyContent: 'space-between',
-          mb: { xs: 1.5, md: 2.5 },
-          mt: { xs: 0.5, md: 1 },
-          height: { xs: 'auto', sm: '40px' },
-          gap: { xs: 1, sm: 0 }
-        }}>
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            width: { xs: '100%', sm: 'auto' }
+      {/* Content Section */}
+      <CardContent sx={{ pt: 0, px: { xs: 2, md: 2.5 }, pb: { xs: 2, md: 2.5 }, flexGrow: 1 }}>
+        {/* Contact Information Box */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 1.5, md: 2 },
+            mb: { xs: 2, md: 2.5 },
+            bgcolor: 'rgba(46, 125, 50, 0.03)',
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: 'rgba(46, 125, 50, 0.1)'
+          }}
+        >
+          <Stack spacing={1.5}>
+            {lead.contactDetails.email && (
+              <Link
+                href={`mailto:${lead.contactDetails.email}`}
+                underline="none"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'primary.main',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  '&:hover': { color: 'primary.dark' }
+                }}
+              >
+                <EmailIcon sx={{ fontSize: '1.1rem', mr: 1 }} />
+                {lead.contactDetails.email}
+              </Link>
+            )}
+            
+            {lead.contactDetails.phone && (
+              <Link
+                href={`tel:${lead.contactDetails.phone}`}
+                underline="none"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'primary.main',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  '&:hover': { color: 'primary.dark' }
+                }}
+              >
+                <PhoneIcon sx={{ fontSize: '1.1rem', mr: 1 }} />
+                {lead.contactDetails.phone}
+              </Link>
+            )}
+
+            {lead.contactDetails.website && (
+              <Link
+                href={lead.contactDetails.website.startsWith('http') ? lead.contactDetails.website : `https://${lead.contactDetails.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="none"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: 'primary.main',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  '&:hover': { color: 'primary.dark' }
+                }}
+              >
+                <LanguageIcon sx={{ fontSize: '1.1rem', mr: 1 }} />
+                Website
+              </Link>
+            )}
+          </Stack>
+        </Paper>
+
+        {/* Address */}
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: { xs: 2, md: 2.5 } }}>
+          <LocationOnIcon sx={{ fontSize: '1.1rem', mr: 1, mt: 0.2, color: 'text.secondary' }} />
+          <Typography variant="body2" color="text.secondary" sx={{
+            fontSize: { xs: '0.75rem', md: '0.875rem' },
+            lineHeight: 1.5
           }}>
-            <Typography variant="subtitle1" fontWeight="medium" sx={{
-              color: 'text.secondary',
-              fontSize: { xs: '0.8rem', md: '0.9rem' }
-            }}>
+            {lead.address}
+          </Typography>
+        </Box>
+
+        {/* Social Media Links */}
+        {lead.contactDetails.socialMedia && Object.keys(lead.contactDetails.socialMedia).length > 0 && (
+          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: { xs: 2, md: 2.5 } }}>
+            {Object.entries(lead.contactDetails.socialMedia).map(([platform, url]) => {
+              if (!url) return null;
+              const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
+              
+              return (
+                <Tooltip key={platform} title={platform.charAt(0).toUpperCase() + platform.slice(1)}>
+                  <IconButton
+                    size="small"
+                    component="a"
+                    href={formattedUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      bgcolor: 'rgba(25, 118, 210, 0.08)',
+                      width: { xs: 28, md: 32 },
+                      height: { xs: 28, md: 32 },
+                      '&:hover': {
+                        bgcolor: 'rgba(25, 118, 210, 0.15)',
+                        transform: 'translateY(-2px)'
+                      }
+                    }}
+                  >
+                    {getSocialIcon(platform)}
+                  </IconButton>
+                </Tooltip>
+              );
+            })}
+          </Stack>
+        )}
+
+        {/* Metadata */}
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={{ xs: 1, sm: 2 }}
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          sx={{ mb: 2 }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                fontSize: { xs: '0.75rem', md: '0.8rem' },
+                mr: 1
+              }}
+            >
               Source:
             </Typography>
             <Chip
               label={lead.source || 'Unknown'}
               size="small"
-              color="default"
               sx={{
-                ml: 1.5,
-                height: { xs: 24, md: 28 },
-                fontWeight: 500,
-                fontSize: { xs: '0.7rem', md: '0.8rem' },
+                height: { xs: 20, md: 24 },
+                fontSize: { xs: '0.65rem', md: '0.75rem' },
                 bgcolor: 'rgba(0, 0, 0, 0.04)',
-                '& .MuiChip-label': { px: 1.5 }
+                '& .MuiChip-label': { px: 1 }
               }}
             />
           </Box>
 
           <Chip
-            label={`${lead.verificationScore || 0}% Verified`}
+            label={`${lead.verificationScore}% Verified`}
             size="small"
             color={
               lead.verificationScore >= 75 ? "success" :
@@ -301,212 +394,54 @@ const LeadCard = ({ lead }) => {
               lead.verificationScore >= 25 ? "warning" : "error"
             }
             sx={{
-              height: { xs: 24, md: 28 },
-              fontWeight: 500,
-              fontSize: { xs: '0.7rem', md: '0.8rem' },
-              '& .MuiChip-label': { px: 1.5 },
-              alignSelf: { xs: 'flex-start', sm: 'center' }
+              height: { xs: 20, md: 24 },
+              fontSize: { xs: '0.65rem', md: '0.75rem' },
+              '& .MuiChip-label': { px: 1 }
             }}
           />
-        </Box>
+        </Stack>
 
-        <Divider sx={{ mb: { xs: 2, md: 3 } }} />
-
-        <Box sx={{ mb: { xs: 2, md: 3 }, flexGrow: 1 }}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 2, md: 2.5 },
-              bgcolor: 'rgba(46, 125, 50, 0.05)',
-              borderRadius: 3,
-              border: '1px solid rgba(46, 125, 50, 0.1)',
-              minHeight: { xs: '100px', md: '120px' },
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}
-          >
-            {lead.contactDetails.email && (
-              <Box sx={{
-                display: 'flex',
-                alignItems: { xs: 'flex-start', md: 'center' },
-                mb: 1.5,
-                flexWrap: 'wrap'
-              }}>
-                <EmailIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main', mt: { xs: 0.3, md: 0 } }} />
-                <Link
-                  href={`mailto:${lead.contactDetails.email}`}
-                  underline="hover"
-                  sx={{
-                    fontWeight: 500,
-                    color: 'primary.main',
-                    fontSize: { xs: '0.8rem', md: '0.875rem' },
-                    wordBreak: 'break-word',
-                    '&:hover': {
-                      color: 'primary.dark'
-                    }
-                  }}
-                >
-                  {lead.contactDetails.email}
-                </Link>
-              </Box>
-            )}
-
-            {lead.contactDetails.phone && (
-              <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                mb: lead.contactDetails.website ? 1.5 : 0
-              }}>
-                <PhoneIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                <Link
-                  href={`tel:${lead.contactDetails.phone}`}
-                  underline="hover"
-                  sx={{
-                    fontWeight: 500,
-                    color: 'primary.main',
-                    fontSize: { xs: '0.8rem', md: '0.875rem' },
-                    '&:hover': {
-                      color: 'primary.dark'
-                    }
-                  }}
-                >
-                  {lead.contactDetails.phone}
-                </Link>
-              </Box>
-            )}
-
-            {lead.contactDetails.website && (
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <LanguageIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                <Link
-                  href={lead.contactDetails.website.startsWith('http') ? lead.contactDetails.website : `https://${lead.contactDetails.website}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  underline="hover"
-                  sx={{
-                    fontWeight: 500,
-                    color: 'primary.main',
-                    fontSize: { xs: '0.8rem', md: '0.875rem' },
-                    '&:hover': {
-                      color: 'primary.dark'
-                    }
-                  }}
-                >
-                  Website
-                </Link>
-              </Box>
-            )}
-
-            {/* Social Media Icons - Always visible */}
-            {lead.contactDetails.socialMedia && Object.keys(lead.contactDetails.socialMedia).length > 0 && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  {Object.entries(lead.contactDetails.socialMedia || {}).map(([platform, url]) => {
-                    // Skip if URL is empty or undefined
-                    if (!url) return null;
-
-                    // Format URL properly
-                    const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
-
-                    return (
-                      <Tooltip title={platform.charAt(0).toUpperCase() + platform.slice(1)} key={platform}>
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          component="a"
-                          href={formattedUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                            bgcolor: 'rgba(25, 118, 210, 0.08)',
-                            width: { xs: 28, md: 32 },
-                            height: { xs: 28, md: 32 },
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-                              bgcolor: 'rgba(25, 118, 210, 0.15)'
-                            }
-                          }}
-                        >
-                          {getSocialIcon(platform)}
-                        </IconButton>
-                      </Tooltip>
-                    );
-                  })}
-                </Box>
-              </Box>
-            )}
-          </Paper>
-        </Box>
-
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          mb: { xs: 1.5, md: 2.5 },
-          minHeight: { xs: '40px', md: '50px' }
-        }}>
-          <LocationOnIcon fontSize="small" sx={{ mr: 1.5, mt: 0.3, color: 'text.secondary' }} />
-          <Typography variant="body2" color="text.secondary" sx={{
-            lineHeight: 1.5,
-            fontSize: { xs: '0.75rem', md: '0.875rem' }
-          }}>
-            {lead.address || 'Address not available'}
-          </Typography>
-        </Box>
-
+        {/* Show More Content */}
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <Box sx={{ mt: 3 }}>
-            <Paper
-              elevation={0}
+          <Box sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
               sx={{
-                p: 2.5,
-                bgcolor: 'rgba(0, 0, 0, 0.02)',
-                borderRadius: 3,
-                mb: 3
+                color: 'text.secondary',
+                fontSize: { xs: '0.75rem', md: '0.875rem' },
+                lineHeight: 1.6,
+                mb: 2
               }}
             >
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1, lineHeight: 1.6 }}>
-                {lead.description}
-              </Typography>
-            </Paper>
+              {lead.description}
+            </Typography>
 
-            {/* Google Maps link if available */}
             {lead.googleMapsUrl && (
-              <Box sx={{ mb: 3 }}>
-                <Button
-                  variant="outlined"
-                  size="medium"
-                  startIcon={<GoogleIcon />}
-                  component="a"
-                  href={lead.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    borderRadius: 3,
-                    px: 2.5,
-                    py: 1,
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                    '&:hover': {
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    }
-                  }}
-                >
-                  View on Google Maps
-                </Button>
-              </Box>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<GoogleIcon />}
+                component="a"
+                href={lead.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  mb: 2
+                }}
+              >
+                View on Google Maps
+              </Button>
             )}
 
-            {/* Photos if available */}
-            {lead.photos && lead.photos.length > 0 && (
-              <Box sx={{ mt: 3, mb: 3 }}>
-                <Typography variant="subtitle2" gutterBottom fontWeight="bold" sx={{ mb: 1.5 }}>
+            {lead.photos?.length > 0 && (
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" gutterBottom sx={{ fontSize: { xs: '0.8rem', md: '0.9rem' }, fontWeight: 600 }}>
                   Photos
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                   {lead.photos.slice(0, 3).map((photo, index) => (
                     <Box
                       key={index}
@@ -514,34 +449,32 @@ const LeadCard = ({ lead }) => {
                       src={photo.url}
                       alt={`${lead.businessName} photo ${index + 1}`}
                       sx={{
-                        width: 100,
-                        height: 100,
+                        width: 80,
+                        height: 80,
+                        borderRadius: 1,
                         objectFit: 'cover',
-                        borderRadius: 2,
-                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                        transition: 'transform 0.2s, box-shadow 0.2s',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                        transition: 'transform 0.2s',
                         '&:hover': {
-                          transform: 'scale(1.05)',
-                          boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+                          transform: 'scale(1.05)'
                         }
                       }}
                     />
                   ))}
-                </Box>
+                </Stack>
               </Box>
             )}
-
-            {/* Additional information section - we've moved social media to the main card view */}
           </Box>
         </Collapse>
       </CardContent>
 
+      {/* Actions */}
       <CardActions sx={{
-        justifyContent: 'space-between',
-        px: { xs: 2, md: 3 },
-        py: { xs: 1.5, md: 2.5 },
+        px: { xs: 2, md: 2.5 },
+        py: { xs: 1.5, md: 2 },
         bgcolor: 'rgba(0, 0, 0, 0.02)',
-        borderTop: '1px solid rgba(0, 0, 0, 0.05)'
+        borderTop: '1px solid rgba(0, 0, 0, 0.05)',
+        gap: 1
       }}>
         <Button
           size="small"
@@ -550,16 +483,11 @@ const LeadCard = ({ lead }) => {
           color={copied ? "success" : "primary"}
           variant="outlined"
           sx={{
-            borderRadius: 3,
-            px: { xs: 1.5, md: 2.5 },
-            py: { xs: 0.5, md: 0.8 },
+            borderRadius: 2,
             textTransform: 'none',
-            fontWeight: 500,
             fontSize: { xs: '0.75rem', md: '0.875rem' },
-            boxShadow: copied ? '0 2px 8px rgba(76, 175, 80, 0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
-            '&:hover': {
-              boxShadow: copied ? '0 4px 12px rgba(76, 175, 80, 0.3)' : '0 4px 12px rgba(0,0,0,0.1)',
-            }
+            px: { xs: 1.5, md: 2 },
+            py: 0.75
           }}
         >
           {copied ? "Copied!" : "Copy Contact"}
@@ -570,15 +498,12 @@ const LeadCard = ({ lead }) => {
           onClick={handleExpandClick}
           endIcon={expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           sx={{
-            borderRadius: 3,
-            px: { xs: 1.5, md: 2.5 },
-            py: { xs: 0.5, md: 0.8 },
+            borderRadius: 2,
             textTransform: 'none',
-            fontWeight: 500,
             fontSize: { xs: '0.75rem', md: '0.875rem' },
-            '&:hover': {
-              bgcolor: 'rgba(0, 0, 0, 0.05)'
-            }
+            px: { xs: 1.5, md: 2 },
+            py: 0.75,
+            ml: 'auto'
           }}
         >
           {expanded ? "Show Less" : "Show More"}
