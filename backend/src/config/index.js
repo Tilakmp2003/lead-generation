@@ -21,3 +21,9 @@ const config = {
 };
 
 module.exports = config;
+
+// Check for required Google API Key after config object is defined
+if (!config.google.placesApiKey) {
+  console.error('CRITICAL: Missing required environment variable GOOGLE_PLACES_API_KEY. Google Places features will not work.');
+  throw new Error('Missing required environment variable: GOOGLE_PLACES_API_KEY. Please set it in your .env file or environment configuration.');
+}

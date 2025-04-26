@@ -1,23 +1,41 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Use the correct Supabase URL and key
-const supabaseUrl = 'https://jdsknrzxmolslatpeokc.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impkc2tucnp4bW9sc2xhdHBlb2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NDM4NDgsImV4cCI6MjA2MTIxOTg0OH0.ljqnp2bSfiRJ6NUcvrc0muN_HnqbQ6-vsogZ0uk8P1U';
+// Use environment variables provided by Vite
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Log Supabase configuration for debugging
-console.log('Supabase URL:', supabaseUrl);
-console.log('Supabase Key available:', !!supabaseAnonKey);
+// Log Supabase configuration for debugging (using env vars)
+console.log('Supabase URL from env:', supabaseUrl);
+console.log('Supabase Key available from env:', !!supabaseAnonKey);
 
-// Create Supabase client with additional options
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    storageKey: 'lead-generation-auth',
-    storage: localStorage
-  }
-});
+// Check if environment variables are set
+if (!supabaseUrl) {
+  console.error('CRITICAL: Missing environment variable VITE_SUPABASE_URL. Frontend Supabase features will not work.');
+  // alert('Application configuration error: Supabase URL is missing.'); // Optional: Alert user
+}
+if (!supabaseAnonKey) {
+  console.error('CRITICAL: Missing environment variable VITE_SUPABASE_ANON_KEY. Frontend Supabase features will not work.');
+  // alert('Application configuration error: Supabase Key is missing.'); // Optional: Alert user
+}
+
+// Initialize Supabase client only if variables are present
+let supabaseInstance = null;
+if (supabaseUrl && supabaseAnonKey) {
+  supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+      storageKey: 'lead-generation-auth',
+      storage: localStorage
+    }
+  });
+} else {
+  console.error("Supabase client could not be initialized due to missing environment variables.");
+}
+
+export const supabase = supabaseInstance;
 
 // Log the current session for debugging
 supabase.auth.getSession().then(({ data, error }) => {
