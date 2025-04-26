@@ -1,25 +1,29 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline, Box, Snackbar, Alert } from '@mui/material';
-import './App.css';
-
-// Auth Context
-import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/styles/CssBaseline';
+import { Box, Snackbar, Alert } from '@mui/material';
 
 // Components
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
-import HomePage from './components/Home/HomePage';
-import ResultsPage from './components/Results/ResultsPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Callback from './components/Auth/Callback';
+import OAuth2Callback from './components/Auth/OAuth2Callback';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import HomePage from './components/Home/HomePage';
+import ResultsPage from './components/Results/ResultsPage';
+import PrivacyPolicy from './components/Legal/PrivacyPolicy';
+import TermsOfService from './components/Legal/TermsOfService';
 
-// Google Sheets API
+// Context
+import { AuthProvider } from './contexts/AuthContext';
+
+// Services
 import { initGoogleSheetsAPI } from './services/googleSheetsService';
 
-// Create a theme
+// Theme configuration
 const theme = createTheme({
   palette: {
     primary: {
@@ -126,26 +130,18 @@ function App() {
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   useEffect(() => {
-    // Initialize Google Sheets API
     const initGoogleAPI = async () => {
       try {
         await initGoogleSheetsAPI();
-        console.log('Google Sheets API initialized');
       } catch (error) {
-        console.error('Error initializing Google Sheets API:', error);
-        // Don't show error to user if it's just missing credentials or origin issues
-        const errorMsg = error.message || (error.details ? error.details : JSON.stringify(error));
-        const isMissingCredentials = errorMsg.includes('missing');
-        const isOriginIssue = errorMsg.includes('origin');
-
-        if (!isMissingCredentials && !isOriginIssue) {
-          setSnackbarMessage('Failed to initialize Google Sheets API. Export functionality may not work.');
-          setSnackbarSeverity('warning');
-          setOpenSnackbar(true);
-        } else {
-          console.log('Google Sheets API initialization skipped due to:',
-            isMissingCredentials ? 'missing credentials' : 'origin restriction');
-        }
+        console.error('Failed to initialize Google API:', error);
+        const isMissingCredentials = !import.meta.env.VITE_GOOGLE_SHEETS_CLIENT_ID || 
+                                   !import.meta.env.VITE_GOOGLE_SHEETS_API_KEY;
+        setSnackbarMessage(`Google Sheets integration is not available: ${
+          isMissingCredentials ? 'missing credentials' : 'origin restriction'
+        }`);
+        setSnackbarSeverity('warning');
+        setOpenSnackbar(true);
       }
     };
 
@@ -178,6 +174,9 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/callback" element={<Callback />} />
+                <Route path="/oauth2callback" element={<OAuth2Callback />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
 
                 {/* Protected routes */}
                 <Route element={<ProtectedRoute />}>
@@ -192,7 +191,6 @@ function App() {
 
             <Footer />
 
-            {/* Global Snackbar for app-wide notifications */}
             <Snackbar
               open={openSnackbar}
               autoHideDuration={6000}

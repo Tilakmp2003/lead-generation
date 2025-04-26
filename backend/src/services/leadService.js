@@ -12,7 +12,7 @@ const errorHandler = require('../utils/errorHandler');
 const searchLeads = async (sector, location, options = {}) => {
   const {
     forceRefresh = false,
-    maxResults = 100 // Default to 100 leads maximum
+    maxResults = 100
   } = options;
 
   // Validate inputs
@@ -35,51 +35,68 @@ const searchLeads = async (sector, location, options = {}) => {
     }
   }
 
-  // Fetch leads from Google Places API only
-  const results = [];
-
   try {
     console.log(`Fetching Google Places data for ${sector} in ${location} (max: ${maxResults})...`);
     const googleResults = await googlePlacesService.searchBusinesses(sector, location, maxResults);
     console.log(`Found ${googleResults.length} leads from Google Places API`);
-    results.push(googleResults);
+
+    if (googleResults.length === 0) {
+      throw new Error('No results found from Google Places API');
+    }
+
+    // Filter and process the leads
+    const processedLeads = googleResults
+      .filter(lead => {
+        // Must have either phone or email
+        const hasPhone = lead.contactDetails?.phone?.trim();
+        const hasEmail = lead.contactDetails?.email?.trim();
+        return hasPhone || hasEmail;
+      })
+      .map(lead => ({
+        ...lead,
+        verificationScore: calculateVerificationScore(lead)
+      }));
+
+    // Remove duplicates based on business name and address
+    const uniqueLeads = removeDuplicates(processedLeads);
+
+    // Sort by verification score
+    uniqueLeads.sort((a, b) => b.verificationScore - a.verificationScore);
+
+    // Cache the results
+    cache.set(`leads_${sector}_${location}_google`, uniqueLeads);
+
+    return uniqueLeads;
   } catch (error) {
-    console.error('Error fetching from Google Places:', error);
-    // Don't use mock data, just return an empty array
-    console.log('No mock data will be used as per requirements. Only real data is allowed.');
-    results.push([]);
+    console.error('Error fetching leads:', error);
+    throw errorHandler.internal('Error fetching business leads');
   }
+};
 
-  // Combine results from all sources
-  const allLeads = results.flat();
+/**
+ * Calculate verification score for a lead
+ * @param {Object} lead - Lead object
+ * @returns {number} - Score between 0-100
+ */
+const calculateVerificationScore = (lead) => {
+  let score = 0;
 
-  // Filter out leads without phone numbers unless they have an email
-  const filteredLeads = allLeads.filter(lead => {
-    const hasPhone = lead.contactDetails &&
-                    lead.contactDetails.phone &&
-                    lead.contactDetails.phone.trim() !== '';
+  // Basic info completeness
+  if (lead.businessName) score += 10;
+  if (lead.address) score += 10;
+  if (lead.businessType) score += 10;
 
-    const hasEmail = lead.contactDetails &&
-                    lead.contactDetails.email &&
-                    lead.contactDetails.email.trim() !== '';
+  // Contact details
+  if (lead.contactDetails?.phone) score += 15;
+  if (lead.contactDetails?.email) score += 15;
+  if (lead.contactDetails?.website) score += 10;
 
-    // Keep leads with phone numbers (mandatory) or those with email addresses
-    return hasPhone || hasEmail;
-  });
+  // Additional info
+  if (lead.description) score += 10;
+  if (Object.keys(lead.contactDetails?.socialMedia || {}).length > 0) score += 10;
+  if (lead.rating) score += 10;
 
-  console.log(`Filtered out ${allLeads.length - filteredLeads.length} leads without phone numbers or email addresses`);
-
-  // Remove duplicates based on business name and address
-  const uniqueLeads = removeDuplicates(filteredLeads);
-
-  // Sort by verification score (highest first)
-  uniqueLeads.sort((a, b) => b.verificationScore - a.verificationScore);
-
-  // Cache the results
-  const cacheKey = `leads_${sector}_${location}_google`;
-  cache.set(cacheKey, uniqueLeads);
-
-  return uniqueLeads;
+  return score;
 };
 
 /**
@@ -89,15 +106,9 @@ const searchLeads = async (sector, location, options = {}) => {
  */
 const removeDuplicates = (leads) => {
   const seen = new Set();
-
   return leads.filter(lead => {
-    // Create a unique key based on business name and address
-    const key = `${lead.businessName.toLowerCase()}_${lead.address.toLowerCase()}`;
-
-    if (seen.has(key)) {
-      return false;
-    }
-
+    const key = `${lead.businessName?.toLowerCase()}_${lead.address?.toLowerCase()}`;
+    if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });

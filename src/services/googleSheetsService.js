@@ -46,7 +46,11 @@ export const initGoogleSheetsAPI = () => {
             apiKey: API_KEY,
             clientId: CLIENT_ID,
             discoveryDocs: DISCOVERY_DOCS,
-            scope: SCOPES
+            scope: SCOPES,
+            ux_mode: 'redirect',
+            redirect_uri: `${window.location.origin}/oauth2callback`,
+            access_type: 'offline',
+            include_granted_scopes: true
           });
           
           // Additional check to ensure Sheets API is loaded
@@ -67,9 +71,33 @@ export const initGoogleSheetsAPI = () => {
   });
 };
 
-// Sign in the user
-export const signIn = () => {
-  return window.gapi.auth2.getAuthInstance().signIn();
+// Sign in the user with improved error handling
+export const signIn = async () => {
+  try {
+    const auth2 = window.gapi.auth2.getAuthInstance();
+    const options = {
+      prompt: 'consent',
+      ux_mode: 'redirect',
+      redirect_uri: `${window.location.origin}/oauth2callback`,
+      access_type: 'offline',
+      include_granted_scopes: true
+    };
+    
+    console.log('Starting Google Sign In with options:', options);
+    const user = await auth2.signIn(options);
+    return user;
+  } catch (error) {
+    console.error('Google Sign In Error:', error);
+    if (error.error === 'popup_closed_by_user') {
+      throw new Error('Sign in was cancelled. Please try again.');
+    } else if (error.error === 'access_denied') {
+      throw new Error('Please grant access to Google Sheets to export leads.');
+    } else if (error.error === 'idpiframe_initialization_failed') {
+      throw new Error('Google Sign In is not properly configured. Please check your domain settings.');
+    } else {
+      throw error;
+    }
+  }
 };
 
 // Sign out the user
