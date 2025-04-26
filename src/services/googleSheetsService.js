@@ -3,63 +3,67 @@
 // Google API credentials from environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_SHEETS_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY;
-const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
-const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
-
-// Log for debugging (remove in production)
-console.log('Google Sheets Client ID:', CLIENT_ID ? 'Configured' : 'Missing');
-console.log('Google Sheets API Key:', API_KEY ? 'Configured' : 'Missing');
+const DISCOVERY_DOCS = [
+  "https://sheets.googleapis.com/$discovery/rest?version=v4",
+  "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
+];
+const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
 
 // Initialize the Google API client
 export const initGoogleSheetsAPI = () => {
   return new Promise((resolve, reject) => {
-    // Check if API credentials are available
-    if (!API_KEY || !CLIENT_ID) {
-      console.warn('Google Sheets API credentials missing. Some features may not work.');
-      reject(new Error('Google Sheets API credentials missing'));
-      return;
-    }
+    const waitForGapi = () => {
+      if (!window.gapi) {
+        setTimeout(waitForGapi, 100);
+        return;
+      }
+      
+      // Check if API credentials are available
+      if (!API_KEY || !CLIENT_ID) {
+        console.error('Google Sheets API credentials missing. Check your environment variables.');
+        reject(new Error('Google Sheets API credentials missing'));
+        return;
+      }
 
-    // Check if gapi is loaded
-    if (!window.gapi) {
-      console.error('Google API client library not loaded');
-      reject(new Error('Google API client library not loaded'));
-      return;
-    }
-
-    // For development environment, we'll use a mock implementation
-    // In production, you would need to properly configure the OAuth client
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      console.log('Development environment detected. Using mock Google Sheets API.');
-
-      // Create mock implementations for Google Sheets API
-      window.gapi.auth2 = {
-        getAuthInstance: () => ({
-          isSignedIn: { get: () => false },
-          signIn: () => Promise.resolve({ name: 'Mock User' }),
-          signOut: () => Promise.resolve()
-        })
-      };
-
-      // Resolve with mock implementation
-      resolve();
-      return;
-    }
-
-    // For production environment, initialize the real API
-    window.gapi.load('client:auth2', () => {
-      window.gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-      }).then(() => {
+      // For development environment, use mock implementation
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('Development environment detected. Using mock Google Sheets API.');
+        window.gapi.auth2 = {
+          getAuthInstance: () => ({
+            isSignedIn: { get: () => false },
+            signIn: () => Promise.resolve({ name: 'Mock User' }),
+            signOut: () => Promise.resolve()
+          })
+        };
         resolve();
-      }).catch(error => {
-        console.error('Error initializing Google API client:', error);
-        reject(error);
+        return;
+      }
+
+      // Initialize the real API for production
+      window.gapi.load('client:auth2', async () => {
+        try {
+          await window.gapi.client.init({
+            apiKey: API_KEY,
+            clientId: CLIENT_ID,
+            discoveryDocs: DISCOVERY_DOCS,
+            scope: SCOPES
+          });
+          
+          // Additional check to ensure Sheets API is loaded
+          if (!window.gapi.client.sheets) {
+            throw new Error('Google Sheets API failed to load');
+          }
+          
+          resolve();
+        } catch (error) {
+          console.error('Error initializing Google API client:', error);
+          reject(error);
+        }
       });
-    });
+    };
+
+    // Start waiting for GAPI to load
+    waitForGapi();
   });
 };
 
