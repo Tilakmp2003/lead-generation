@@ -9,13 +9,11 @@ const DISCOVERY_DOCS = [
 ];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
 
-let tokenClient;
-
 // Initialize the Google API client
 export const initGoogleSheetsAPI = () => {
   return new Promise((resolve, reject) => {
     const waitForGapi = () => {
-      if (!window.gapi || !window.google) {
+      if (!window.gapi || !window.google?.accounts?.oauth2) {
         setTimeout(waitForGapi, 100);
         return;
       }
@@ -30,12 +28,17 @@ export const initGoogleSheetsAPI = () => {
       // For development environment, use mock implementation
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         console.log('Development environment detected. Using mock Google Sheets API.');
-        window.gapi.auth2 = {
-          getAuthInstance: () => ({
-            isSignedIn: { get: () => false },
-            signIn: () => Promise.resolve({ name: 'Mock User' }),
-            signOut: () => Promise.resolve()
-          })
+        window.gapi.client = {
+          init: () => Promise.resolve(),
+          sheets: {
+            spreadsheets: {
+              create: () => Promise.resolve({ result: { spreadsheetId: 'mock-id' } }),
+              values: { update: () => Promise.resolve({ result: {} }) }
+            }
+          },
+          drive: {
+            files: { list: () => Promise.resolve({ result: { files: [] } }) }
+          }
         };
         resolve();
         return;
@@ -48,22 +51,6 @@ export const initGoogleSheetsAPI = () => {
             apiKey: API_KEY,
             discoveryDocs: DISCOVERY_DOCS,
           });
-
-          // Initialize the tokenClient
-          tokenClient = window.google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID,
-            scope: SCOPES,
-            callback: '', // defined at request time
-            prompt: 'consent',
-            ux_mode: 'redirect',
-            redirect_uri: `${window.location.origin}/oauth2callback`
-          });
-          
-          // Additional check to ensure Sheets API is loaded
-          if (!window.gapi.client.sheets) {
-            throw new Error('Google Sheets API failed to load');
-          }
-          
           resolve();
         } catch (error) {
           console.error('Error initializing Google API client:', error);
@@ -72,7 +59,6 @@ export const initGoogleSheetsAPI = () => {
       });
     };
 
-    // Start waiting for GAPI to load
     waitForGapi();
   });
 };
@@ -81,16 +67,25 @@ export const initGoogleSheetsAPI = () => {
 export const signIn = () => {
   return new Promise((resolve, reject) => {
     try {
-      tokenClient.callback = async (response) => {
-        if (response.error) {
-          reject(response);
-          return;
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (response) => {
+          if (response.error) {
+            reject(response);
+            return;
+          }
+          
+          // Store the access token
+          localStorage.setItem('gapi_access_token', response.access_token);
+          window.gapi.client.setToken({ access_token: response.access_token });
+          resolve(response);
+        },
+        error_callback: (error) => {
+          console.error('OAuth Error:', error);
+          reject(error);
         }
-        
-        // Store the access token
-        localStorage.setItem('gapi_access_token', response.access_token);
-        resolve(response);
-      };
+      });
 
       if (localStorage.getItem('gapi_access_token')) {
         // Token exists, verify it
@@ -100,7 +95,7 @@ export const signIn = () => {
         resolve({ access_token: localStorage.getItem('gapi_access_token') });
       } else {
         // Request authorization
-        tokenClient.requestAccessToken();
+        client.requestAccessToken();
       }
     } catch (error) {
       console.error('Google Sign In Error:', error);
@@ -112,7 +107,9 @@ export const signIn = () => {
 // Sign out the user
 export const signOut = () => {
   localStorage.removeItem('gapi_access_token');
-  window.gapi.client.setToken(null);
+  if (window.gapi?.client) {
+    window.gapi.client.setToken(null);
+  }
   return Promise.resolve();
 };
 
