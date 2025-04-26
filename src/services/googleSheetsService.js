@@ -1,6 +1,4 @@
 // Google Sheets API integration service
-
-// Google API credentials from environment variables
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_SHEETS_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY;
 const DISCOVERY_DOCS = [
@@ -9,93 +7,106 @@ const DISCOVERY_DOCS = [
 ];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
 
+let tokenClient;
+let gapiInited = false;
+let gisInited = false;
+
 // Initialize the Google API client
 export const initGoogleSheetsAPI = () => {
   return new Promise((resolve, reject) => {
-    const waitForGapi = () => {
-      if (!window.gapi || !window.google?.accounts?.oauth2) {
-        setTimeout(waitForGapi, 100);
-        return;
-      }
-      
-      // Check if API credentials are available
-      if (!API_KEY || !CLIENT_ID) {
-        console.error('Google Sheets API credentials missing. Check your environment variables.');
-        reject(new Error('Google Sheets API credentials missing'));
-        return;
-      }
-
-      // For development environment, use mock implementation
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        console.log('Development environment detected. Using mock Google Sheets API.');
-        window.gapi.client = {
-          init: () => Promise.resolve(),
-          sheets: {
-            spreadsheets: {
-              create: () => Promise.resolve({ result: { spreadsheetId: 'mock-id' } }),
-              values: { update: () => Promise.resolve({ result: {} }) }
-            }
-          },
-          drive: {
-            files: { list: () => Promise.resolve({ result: { files: [] } }) }
-          }
-        };
+    const maybeResolve = () => {
+      if (gapiInited && gisInited) {
         resolve();
-        return;
       }
-
-      // Initialize the real API for production
-      window.gapi.load('client', async () => {
-        try {
-          await window.gapi.client.init({
-            apiKey: API_KEY,
-            discoveryDocs: DISCOVERY_DOCS,
-          });
-          resolve();
-        } catch (error) {
-          console.error('Error initializing Google API client:', error);
-          reject(error);
-        }
-      });
     };
 
-    waitForGapi();
+    const initializeGapiClient = async () => {
+      try {
+        await window.gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: DISCOVERY_DOCS,
+        });
+        gapiInited = true;
+        maybeResolve();
+      } catch (error) {
+        console.error('Error initializing GAPI client:', error);
+        reject(error);
+      }
+    };
+
+    // First, load and initialize the gapi.client
+    if (!window.gapi) {
+      const script = document.createElement('script');
+      script.src = 'https://apis.google.com/js/api.js';
+      script.onload = () => {
+        window.gapi.load('client', initializeGapiClient);
+      };
+      script.onerror = (error) => reject(new Error('Failed to load Google API script'));
+      document.body.appendChild(script);
+    } else {
+      window.gapi.load('client', initializeGapiClient);
+    }
+
+    // Then, initialize the tokenClient
+    if (!window.google) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.onload = () => {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: '', // Will be set later
+          error_callback: (err) => {
+            console.error('TokenClient Error:', err);
+            reject(err);
+          }
+        });
+        gisInited = true;
+        maybeResolve();
+      };
+      script.onerror = (error) => reject(new Error('Failed to load Google Identity Services script'));
+      document.body.appendChild(script);
+    } else {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: '', // Will be set later
+        error_callback: (err) => {
+          console.error('TokenClient Error:', err);
+          reject(err);
+        }
+      });
+      gisInited = true;
+      maybeResolve();
+    }
   });
 };
 
 // Sign in the user with improved error handling
 export const signIn = () => {
   return new Promise((resolve, reject) => {
-    try {
-      const client = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: (response) => {
-          if (response.error) {
-            reject(response);
-            return;
-          }
-          
-          // Store the access token
-          localStorage.setItem('gapi_access_token', response.access_token);
-          window.gapi.client.setToken({ access_token: response.access_token });
-          resolve(response);
-        },
-        error_callback: (error) => {
-          console.error('OAuth Error:', error);
-          reject(error);
-        }
-      });
+    if (!tokenClient) {
+      reject(new Error('Token client not initialized. Call initGoogleSheetsAPI first.'));
+      return;
+    }
 
-      if (localStorage.getItem('gapi_access_token')) {
-        // Token exists, verify it
-        window.gapi.client.setToken({
-          access_token: localStorage.getItem('gapi_access_token')
-        });
-        resolve({ access_token: localStorage.getItem('gapi_access_token') });
+    try {
+      // Set the callback before requesting token
+      tokenClient.callback = (response) => {
+        if (response.error) {
+          reject(response);
+          return;
+        }
+        window.gapi.client.setToken(response);
+        resolve(response);
+      };
+
+      // Request token
+      if (window.gapi.client.getToken() === null) {
+        tokenClient.requestAccessToken();
       } else {
-        // Request authorization
-        client.requestAccessToken();
+        // Skip if already signed in
+        resolve(window.gapi.client.getToken());
       }
     } catch (error) {
       console.error('Google Sign In Error:', error);
@@ -106,39 +117,26 @@ export const signIn = () => {
 
 // Sign out the user
 export const signOut = () => {
-  localStorage.removeItem('gapi_access_token');
-  if (window.gapi?.client) {
+  const token = window.gapi.client.getToken();
+  if (token !== null) {
+    google.accounts.oauth2.revoke(token.access_token);
     window.gapi.client.setToken(null);
   }
-  return Promise.resolve();
 };
 
 // Check if user is signed in
 export const isSignedIn = () => {
-  return !!localStorage.getItem('gapi_access_token');
+  return window.gapi?.client?.getToken() !== null;
 };
 
 // Create a new Google Sheet
 export const createSheet = async (title) => {
   try {
-    // Check if we're in development mode with mock implementation
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      console.log('Creating mock Google Sheet:', title);
-      return {
-        spreadsheetId: 'mock-sheet-id-' + Date.now(),
-        spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/mock-sheet-id',
-        properties: {
-          title: title
-        }
-      };
-    }
-
     // Ensure we have a valid token
     if (!isSignedIn()) {
       await signIn();
     }
 
-    // Real implementation for production
     const response = await window.gapi.client.sheets.spreadsheets.create({
       properties: {
         title: title
@@ -189,17 +187,6 @@ export const exportLeadsToSheet = async (leads, sheetId) => {
     // Combine headers and rows
     const values = [headers, ...rows];
 
-    // Check if we're in development mode with mock implementation
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      console.log('Exporting leads to mock Google Sheet:', sheetId);
-      console.log('Data being exported:', values);
-      return {
-        spreadsheetId: sheetId,
-        updatedCells: values.flat().length,
-        updatedRange: 'Sheet1!A1:I' + (leads.length + 1)
-      };
-    }
-
     // Real implementation for production
     const response = await window.gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId: sheetId,
@@ -213,37 +200,6 @@ export const exportLeadsToSheet = async (leads, sheetId) => {
     return response.result;
   } catch (error) {
     console.error('Error exporting leads:', error);
-    throw error;
-  }
-};
-
-// Get a list of user's spreadsheets
-export const getSpreadsheets = async () => {
-  try {
-    // Ensure we have a valid token
-    if (!isSignedIn()) {
-      await signIn();
-    }
-
-    // Check if we're in development mode with mock implementation
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      console.log('Getting mock spreadsheets list');
-      return [
-        { id: 'mock-sheet-id-1', name: 'Mock Spreadsheet 1' },
-        { id: 'mock-sheet-id-2', name: 'Mock Spreadsheet 2' },
-        { id: 'mock-sheet-id-3', name: 'Lead Generation Data' }
-      ];
-    }
-
-    // Real implementation for production
-    const response = await window.gapi.client.drive.files.list({
-      q: "mimeType='application/vnd.google-apps.spreadsheet'",
-      fields: 'files(id, name)'
-    });
-
-    return response.result.files;
-  } catch (error) {
-    console.error('Error getting spreadsheets:', error);
     throw error;
   }
 };
