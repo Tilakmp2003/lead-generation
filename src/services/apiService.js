@@ -2,17 +2,27 @@ import axios from 'axios';
 import { supabase } from './supabase';
 
 // Backend API URL
-const API_URL = import.meta.env.VITE_BACKEND_API_URL;
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'https://lead-gen-fsei.onrender.com/api';
 
 if (!API_URL) {
-  console.error('CRITICAL: Missing environment variable VITE_BACKEND_API_URL. API calls will fail.');
-  // Optionally throw an error or display a message to the user
-  // throw new Error('Backend API URL is not configured. Please check your environment variables.');
+  console.error('CRITICAL: Missing environment variable VITE_BACKEND_API_URL. Using default API URL.');
 }
+
 /**
  * Service for handling API requests
  */
 class ApiService {
+  constructor() {
+    // Create axios instance with default config
+    this.client = axios.create({
+      baseURL: API_URL,
+      timeout: 15000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   /**
    * Search for leads based on sector and location
    * @param {string} sector - Business sector
@@ -36,77 +46,44 @@ class ApiService {
           authHeader = {
             Authorization: `Bearer ${data.session.access_token}`
           };
-        } else if (process.env.NODE_ENV === 'development') {
-          console.log('Development mode: Proceeding without authentication');
-        } else {
-          console.warn('No authentication token available');
         }
       } catch (authError) {
         console.error('Error getting authentication token:', authError);
-        if (process.env.NODE_ENV !== 'development') {
-          throw new Error('Authentication required. Please log in to search for leads.');
-        }
+        throw new Error('Authentication required. Please log in to search for leads.');
       }
-
-      // Ensure maxResults is included in options if not already set
-      const updatedOptions = {
-        maxResults: 100, // Default to 100 leads
-        ...options
-      };
 
       // Build query parameters
       const params = new URLSearchParams({
         sector,
         location,
-        ...updatedOptions
+        maxResults: options.maxResults || 100
       });
 
-      // Make request to backend API with shorter timeout
+      // Make request to backend API
       console.log(`Making API request to: ${API_URL}/leads/search?${params.toString()}`);
-      const response = await axios.get(
-        `${API_URL}/leads/search?${params.toString()}`,
+      const response = await this.client.get(
+        `/leads/search?${params.toString()}`,
         {
           headers: authHeader,
-          timeout: 10000 // Reduce timeout to 10 seconds for faster response
+          withCredentials: true // Enable sending cookies for CORS
         }
       );
 
-      // Check if the request was successful
-      if (response.status !== 200) {
-        throw new Error(`API request failed with status ${response.status}`);
+      if (!response.data) {
+        throw new Error('No data received from API');
       }
 
-      console.log('API Response:', response);
-      console.log('API Response data:', response.data);
+      // Extract leads data
+      let leadsData = Array.isArray(response.data) ? response.data :
+                      response.data.data && Array.isArray(response.data.data) ? response.data.data :
+                      [];
 
-      // Ensure we have a valid response structure
-      console.log('Raw API response data structure:', JSON.stringify(response.data));
-
-      // Extract leads data, ensuring it's always an array
-      let leadsData = [];
-
-      if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        leadsData = response.data.data;
-      } else if (response.data && Array.isArray(response.data)) {
-        leadsData = response.data;
-      } else if (response.data && typeof response.data === 'object') {
-        // Try to extract any array from the response
-        const possibleArrays = Object.values(response.data).filter(val => Array.isArray(val));
-        if (possibleArrays.length > 0) {
-          // Use the first array found
-          leadsData = possibleArrays[0];
-        }
-      }
-
-      console.log(`Successfully extracted ${leadsData.length} leads from response`);
-
-      // Process leads immediately to ensure they have all required fields
+      // Process and validate leads
       const processedLeads = leadsData.map(lead => ({
-        ...lead,
         id: lead.id || `lead-${Math.random().toString(36).substring(2, 9)}`,
         businessName: lead.businessName || 'Unknown Business',
-        businessType: lead.businessType || 'Retail',
-        verificationScore: lead.verificationScore || Math.floor(Math.random() * 100),
+        businessType: lead.businessType || sector,
+        verificationScore: lead.verificationScore || 0,
         contactDetails: {
           ...(lead.contactDetails || {}),
           email: lead.contactDetails?.email || '',
@@ -118,44 +95,19 @@ class ApiService {
         description: lead.description || 'No description available'
       }));
 
-      // Log a sample of processed leads
-      if (processedLeads.length > 0) {
-        console.log('First processed lead sample:', processedLeads[0]);
-      }
-
-      // Return the processed leads data
       return processedLeads;
     } catch (error) {
       console.error('Error in searchLeads:', error);
-
-      // Log more detailed error information
+      
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.error('Error response data:', error.response.data);
         console.error('Error response status:', error.response.status);
-        console.error('Error response headers:', error.response.headers);
       } else if (error.request) {
-        // The request was made but no response was received
         console.error('Error request:', error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error('Error message:', error.message);
       }
 
-      // If the backend is not available, show a more user-friendly error
-      if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
-        throw new Error('Cannot connect to the backend server. Please make sure it is running.');
-      }
-
-      // If authentication error
-      if (error.response && error.response.status === 401) {
-        throw new Error('Authentication required. Please log in to search for leads.');
-      }
-
-      // If CORS error
-      if (error.message && error.message.includes('CORS')) {
-        throw new Error('CORS error: The backend server is not allowing requests from this origin.');
+      if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+        throw new Error('Cannot connect to the backend server. Please try again later.');
       }
 
       throw error;
@@ -309,16 +261,10 @@ class ApiService {
           authHeader = {
             Authorization: `Bearer ${data.session.access_token}`
           };
-        } else if (process.env.NODE_ENV === 'development') {
-          console.log('Development mode: Proceeding without authentication');
-        } else {
-          console.warn('No authentication token available');
         }
       } catch (authError) {
         console.error('Error getting authentication token:', authError);
-        if (process.env.NODE_ENV !== 'development') {
-          throw new Error('Authentication required. Please log in to view lead details.');
-        }
+        throw new Error('Authentication required. Please log in to view lead details.');
       }
 
       // Make request to backend API

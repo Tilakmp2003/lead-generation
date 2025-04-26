@@ -23,33 +23,35 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 console.log('Allowed CORS Origins:', allowedOrigins);
 
-app.use(cors({
-  origin: (origin, callback) => {
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+    if (!origin) {
+      return callback(null, true);
     }
-    return callback(null, true);
+
+    // Check if the origin is allowed
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      console.warn(`Origin ${origin} not allowed by CORS`);
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
-}));
+};
 
-// Explicitly handle OPTIONS requests
-app.options('*', cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-}));
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
-// Apply other middleware *after* CORS
+// Pre-flight requests
+app.options('*', cors(corsOptions));
+
+// Apply other middleware
 app.use(helmet()); // Security headers
 app.use(express.json()); // Parse JSON request body
 
@@ -59,25 +61,24 @@ app.use((req, res, next) => {
   if (req.url.includes('/__nextjs_original-stack-frames') ||
       req.url.includes('/socket.io/') ||
       req.url.includes('/_next/')) {
-    return res.status(200).end(); // Return 200 OK to prevent further requests
+    return res.status(200).end();
   }
   next();
 });
 
-app.use(morgan('dev')); // HTTP request logger
+// Request logging
+app.use(morgan('dev'));
 
 // Apply rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000, // 1 minute
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 50, // Limit each IP to 50 requests per minute
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 50,
   message: 'Too many requests from this IP, please try again after a minute',
-  skip: (req, res) => {
-    // Skip rate limiting in development environment
-    return process.env.NODE_ENV === 'development';
-  }
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => process.env.NODE_ENV === 'development'
 });
+
 app.use(limiter);
 
 // Routes
@@ -92,9 +93,9 @@ app.get('/health', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({
-    error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+    details: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
 });
 
@@ -102,6 +103,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`CORS allowed origins: ${allowedOrigins.join(', ')}`);
 });
 
 // Handle unhandled promise rejections
