@@ -2,8 +2,13 @@ import axios from 'axios';
 import { supabase } from './supabase';
 
 // Backend API URL
-const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL;
 
+if (!API_URL) {
+  console.error('CRITICAL: Missing environment variable VITE_BACKEND_API_URL. API calls will fail.');
+  // Optionally throw an error or display a message to the user
+  // throw new Error('Backend API URL is not configured. Please check your environment variables.');
+}
 /**
  * Service for handling API requests
  */

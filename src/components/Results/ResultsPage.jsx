@@ -80,66 +80,7 @@ const ResultsPage = () => {
 
       try {
         // Try direct fetch first for more reliable results
-        try {
-          console.log('Trying direct fetch to backend API');
-          const API_URL = 'http://localhost:3000/api';
-          const params = new URLSearchParams();
-          if (sector && sector !== 'All') params.append('sector', sector);
-          if (locationFilter && locationFilter !== 'All') params.append('location', locationFilter);
-          params.append('maxResults', 100);
-
-          const response = await fetch(`${API_URL}/leads/search?${params.toString()}`);
-          const data = await response.json();
-
-          console.log('Direct API response:', data);
-
-          if (data && (data.data || Array.isArray(data))) {
-            const directLeads = data.data || data;
-            if (Array.isArray(directLeads) && directLeads.length > 0) {
-              console.log('Successfully got leads directly from API:', directLeads.length);
-
-              // Process these leads
-              const processedLeads = directLeads.map(lead => ({
-                ...lead,
-                id: lead.id || `lead-${Math.random().toString(36).substring(2, 9)}`,
-                businessName: lead.businessName || 'Unknown Business',
-                businessType: lead.businessType || 'Retail',
-                verificationScore: lead.verificationScore || Math.floor(Math.random() * 100),
-                contactDetails: {
-                  ...(lead.contactDetails || {}),
-                  email: lead.contactDetails?.email || '',
-                  phone: lead.contactDetails?.phone || '',
-                  website: lead.contactDetails?.website || '',
-                  socialMedia: lead.contactDetails?.socialMedia || {}
-                },
-                address: lead.address || 'Address not available',
-                description: lead.description || 'No description available'
-              }));
-
-              // Filter and sort
-              const filteredLeads = processedLeads.filter(lead =>
-                lead && (lead.verificationScore >= minVerificationScore)
-              );
-
-              const sortedLeads = sortLeads(filteredLeads, sortBy);
-              console.log('Direct API sorted leads:', sortedLeads);
-
-              // Update state
-              setLeads(sortedLeads);
-              setLoading(false);
-
-              // Clear the timeout
-              clearTimeout(timeoutId);
-
-              // Exit early since we got data directly
-              return;
-            }
-          }
-        } catch (directError) {
-          console.error('Error with direct API fetch, falling back to apiService:', directError);
-        }
-
-        // Fall back to the API service if direct fetch fails
+        // Use the API service to fetch leads
         console.log('Calling API service with:', { sector, locationFilter });
         const fetchedLeads = await apiService.searchLeads(sector, locationFilter, { maxResults: 100 });
         // Clear the timeout since we got a response
