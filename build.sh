@@ -8,8 +8,13 @@ echo "Installing frontend dependencies..."
 npm install
 
 echo "Building frontend..."
-# Use the existing build script from package.json which also handles copying files
-npm run build
+# Directly build the frontend using npx vite
+npx vite build
+
+# Copy necessary files after build
+echo "Copying configuration files to dist..."
+cp public/_redirects dist/
+cp vercel.json dist/
 
 # --- Backend ---
 echo "Navigating to backend directory..."
