@@ -188,10 +188,11 @@ const LeadCard = ({ lead }) => {
           <Avatar
             sx={{
               bgcolor: getAvatarColor(lead.businessType),
-              width: 64,
-              height: 64,
+              width: { xs: 50, md: 64 },
+              height: { xs: 50, md: 64 },
               boxShadow: '0 6px 12px rgba(0,0,0,0.12)',
-              ml: 1
+              ml: { xs: 0, md: 1 },
+              fontSize: { xs: '1.2rem', md: '1.5rem' }
             }}
           >
             {getInitials(lead.businessName)}
@@ -204,8 +205,8 @@ const LeadCard = ({ lead }) => {
             fontWeight="bold"
             noWrap
             sx={{
-              fontSize: '1.25rem',
-              height: '30px',
+              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+              height: { xs: '24px', md: '30px' },
               display: 'flex',
               alignItems: 'center'
             }}
@@ -216,7 +217,10 @@ const LeadCard = ({ lead }) => {
         subheader={
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.8 }}>
             <StoreIcon fontSize="small" sx={{ mr: 0.8, color: 'text.secondary' }} />
-            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            <Typography variant="body2" color="text.secondary" sx={{
+              fontWeight: 500,
+              fontSize: { xs: '0.75rem', md: '0.875rem' }
+            }}>
               {lead.businessType}
             </Typography>
           </Box>
@@ -228,40 +232,49 @@ const LeadCard = ({ lead }) => {
             color="primary"
             sx={{
               mt: 1.5,
-              mr: 1.5,
+              mr: { xs: 0.5, md: 1.5 },
               fontWeight: 500,
-              fontSize: '0.8rem',
-              height: 28,
+              fontSize: { xs: '0.7rem', md: '0.8rem' },
+              height: { xs: 24, md: 28 },
               background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
               boxShadow: '0 2px 6px rgba(46, 125, 50, 0.2)',
             }}
           />
         }
         sx={{
-          pb: 1,
-          pt: 3,
-          px: 3,
-          height: '100px'
+          pb: { xs: 0.5, md: 1 },
+          pt: { xs: 2, md: 3 },
+          px: { xs: 2, md: 3 },
+          height: { xs: '90px', md: '100px' }
         }}
       />
 
       <CardContent sx={{
-        pt: 1,
+        pt: { xs: 0.5, md: 1 },
         flexGrow: 1,
-        px: 3,
-        pb: 3,
+        px: { xs: 2, md: 3 },
+        pb: { xs: 2, md: 3 },
         display: 'flex',
         flexDirection: 'column'
       }}>
         <Box sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
-          mb: 2.5,
-          mt: 1,
-          height: '40px'
+          mb: { xs: 1.5, md: 2.5 },
+          mt: { xs: 0.5, md: 1 },
+          height: { xs: 'auto', sm: '40px' },
+          gap: { xs: 1, sm: 0 }
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="subtitle1" fontWeight="medium" sx={{ color: 'text.secondary' }}>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: { xs: '100%', sm: 'auto' }
+          }}>
+            <Typography variant="subtitle1" fontWeight="medium" sx={{
+              color: 'text.secondary',
+              fontSize: { xs: '0.8rem', md: '0.9rem' }
+            }}>
               Source:
             </Typography>
             <Chip
@@ -270,8 +283,9 @@ const LeadCard = ({ lead }) => {
               color="default"
               sx={{
                 ml: 1.5,
-                height: 28,
+                height: { xs: 24, md: 28 },
                 fontWeight: 500,
+                fontSize: { xs: '0.7rem', md: '0.8rem' },
                 bgcolor: 'rgba(0, 0, 0, 0.04)',
                 '& .MuiChip-label': { px: 1.5 }
               }}
@@ -287,38 +301,47 @@ const LeadCard = ({ lead }) => {
               lead.verificationScore >= 25 ? "warning" : "error"
             }
             sx={{
-              height: 28,
+              height: { xs: 24, md: 28 },
               fontWeight: 500,
-              '& .MuiChip-label': { px: 1.5 }
+              fontSize: { xs: '0.7rem', md: '0.8rem' },
+              '& .MuiChip-label': { px: 1.5 },
+              alignSelf: { xs: 'flex-start', sm: 'center' }
             }}
           />
         </Box>
 
-        <Divider sx={{ mb: 3 }} />
+        <Divider sx={{ mb: { xs: 2, md: 3 } }} />
 
-        <Box sx={{ mb: 3, flexGrow: 1 }}>
+        <Box sx={{ mb: { xs: 2, md: 3 }, flexGrow: 1 }}>
           <Paper
             elevation={0}
             sx={{
-              p: 2.5,
+              p: { xs: 2, md: 2.5 },
               bgcolor: 'rgba(46, 125, 50, 0.05)',
               borderRadius: 3,
               border: '1px solid rgba(46, 125, 50, 0.1)',
-              minHeight: '120px',
+              minHeight: { xs: '100px', md: '120px' },
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center'
             }}
           >
             {lead.contactDetails.email && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                <EmailIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
+              <Box sx={{
+                display: 'flex',
+                alignItems: { xs: 'flex-start', md: 'center' },
+                mb: 1.5,
+                flexWrap: 'wrap'
+              }}>
+                <EmailIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main', mt: { xs: 0.3, md: 0 } }} />
                 <Link
                   href={`mailto:${lead.contactDetails.email}`}
                   underline="hover"
                   sx={{
                     fontWeight: 500,
                     color: 'primary.main',
+                    fontSize: { xs: '0.8rem', md: '0.875rem' },
+                    wordBreak: 'break-word',
                     '&:hover': {
                       color: 'primary.dark'
                     }
@@ -330,7 +353,11 @@ const LeadCard = ({ lead }) => {
             )}
 
             {lead.contactDetails.phone && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: lead.contactDetails.website ? 1.5 : 0 }}>
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: lead.contactDetails.website ? 1.5 : 0
+              }}>
                 <PhoneIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
                 <Link
                   href={`tel:${lead.contactDetails.phone}`}
@@ -338,6 +365,7 @@ const LeadCard = ({ lead }) => {
                   sx={{
                     fontWeight: 500,
                     color: 'primary.main',
+                    fontSize: { xs: '0.8rem', md: '0.875rem' },
                     '&:hover': {
                       color: 'primary.dark'
                     }
@@ -359,6 +387,7 @@ const LeadCard = ({ lead }) => {
                   sx={{
                     fontWeight: 500,
                     color: 'primary.main',
+                    fontSize: { xs: '0.8rem', md: '0.875rem' },
                     '&:hover': {
                       color: 'primary.dark'
                     }
@@ -392,8 +421,8 @@ const LeadCard = ({ lead }) => {
                           sx={{
                             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                             bgcolor: 'rgba(25, 118, 210, 0.08)',
-                            width: 32,
-                            height: 32,
+                            width: { xs: 28, md: 32 },
+                            height: { xs: 28, md: 32 },
                             '&:hover': {
                               transform: 'translateY(-2px)',
                               boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
@@ -415,11 +444,14 @@ const LeadCard = ({ lead }) => {
         <Box sx={{
           display: 'flex',
           alignItems: 'flex-start',
-          mb: 2.5,
-          minHeight: '50px'
+          mb: { xs: 1.5, md: 2.5 },
+          minHeight: { xs: '40px', md: '50px' }
         }}>
           <LocationOnIcon fontSize="small" sx={{ mr: 1.5, mt: 0.3, color: 'text.secondary' }} />
-          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
+          <Typography variant="body2" color="text.secondary" sx={{
+            lineHeight: 1.5,
+            fontSize: { xs: '0.75rem', md: '0.875rem' }
+          }}>
             {lead.address || 'Address not available'}
           </Typography>
         </Box>
@@ -506,23 +538,24 @@ const LeadCard = ({ lead }) => {
 
       <CardActions sx={{
         justifyContent: 'space-between',
-        px: 3,
-        py: 2.5,
+        px: { xs: 2, md: 3 },
+        py: { xs: 1.5, md: 2.5 },
         bgcolor: 'rgba(0, 0, 0, 0.02)',
         borderTop: '1px solid rgba(0, 0, 0, 0.05)'
       }}>
         <Button
-          size="medium"
+          size="small"
           startIcon={copied ? <VerifiedIcon /> : <ContentCopyIcon />}
           onClick={handleCopyContact}
           color={copied ? "success" : "primary"}
           variant="outlined"
           sx={{
             borderRadius: 3,
-            px: 2.5,
-            py: 0.8,
+            px: { xs: 1.5, md: 2.5 },
+            py: { xs: 0.5, md: 0.8 },
             textTransform: 'none',
             fontWeight: 500,
+            fontSize: { xs: '0.75rem', md: '0.875rem' },
             boxShadow: copied ? '0 2px 8px rgba(76, 175, 80, 0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
             '&:hover': {
               boxShadow: copied ? '0 4px 12px rgba(76, 175, 80, 0.3)' : '0 4px 12px rgba(0,0,0,0.1)',
@@ -533,15 +566,16 @@ const LeadCard = ({ lead }) => {
         </Button>
 
         <Button
-          size="medium"
+          size="small"
           onClick={handleExpandClick}
           endIcon={expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           sx={{
             borderRadius: 3,
-            px: 2.5,
-            py: 0.8,
+            px: { xs: 1.5, md: 2.5 },
+            py: { xs: 0.5, md: 0.8 },
             textTransform: 'none',
             fontWeight: 500,
+            fontSize: { xs: '0.75rem', md: '0.875rem' },
             '&:hover': {
               bgcolor: 'rgba(0, 0, 0, 0.05)'
             }

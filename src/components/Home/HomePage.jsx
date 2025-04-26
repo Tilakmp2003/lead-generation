@@ -41,7 +41,7 @@ const HomePage = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             zIndex: -1,
@@ -57,7 +57,7 @@ const HomePage = () => {
                 gutterBottom
                 sx={{
                   fontWeight: 700,
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                  color: 'black',
                   mb: 3
                 }}
               >
@@ -68,7 +68,7 @@ const HomePage = () => {
                 paragraph
                 sx={{
                   mb: 4,
-                  textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+                  color: 'black',
                   maxWidth: '90%'
                 }}
               >

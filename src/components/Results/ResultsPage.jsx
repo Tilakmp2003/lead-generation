@@ -537,18 +537,19 @@ const ResultsPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 8, px: { xs: 2, sm: 3, md: 4 } }}>
-      <Box sx={{ mb: 5, mt: 2 }}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 2, md: 4 }, mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3, md: 4 } }}>
+      <Box sx={{ mb: { xs: 3, md: 5 }, mt: { xs: 1, md: 2 } }}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/')}
           sx={{
-            mb: 3,
+            mb: { xs: 2, md: 3 },
             borderRadius: 2,
             px: 2,
-            py: 1,
+            py: 0.8,
             textTransform: 'none',
             fontWeight: 500,
+            fontSize: { xs: '0.85rem', md: '0.9rem' },
             boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
             '&:hover': {
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
@@ -564,8 +565,8 @@ const ResultsPage = () => {
           gutterBottom
           sx={{
             fontWeight: 700,
-            fontSize: { xs: '1.8rem', md: '2.2rem' },
-            mb: 2,
+            fontSize: { xs: '1.5rem', sm: '1.8rem', md: '2.2rem' },
+            mb: { xs: 1.5, md: 2 },
             color: 'text.primary'
           }}
         >
@@ -574,16 +575,21 @@ const ResultsPage = () => {
 
         <Box sx={{
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'flex-start', sm: 'center' },
           flexWrap: 'wrap',
-          gap: 2,
+          gap: { xs: 1.5, md: 2 },
           bgcolor: 'rgba(46, 125, 50, 0.05)',
-          p: 2.5,
+          p: { xs: 2, md: 2.5 },
           borderRadius: 3,
           border: '1px solid rgba(46, 125, 50, 0.1)',
           boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
         }}>
-          <Typography variant="body1" sx={{ fontWeight: 500, fontSize: '1.05rem' }}>
+          <Typography variant="body1" sx={{
+            fontWeight: 500,
+            fontSize: { xs: '0.95rem', md: '1.05rem' },
+            width: { xs: '100%', sm: 'auto' }
+          }}>
             Found <strong>{leads.length}</strong> leads for <strong>{sector}</strong> businesses in <strong>{locationFilter}</strong>
           </Typography>
 
@@ -597,7 +603,8 @@ const ResultsPage = () => {
               sx={{
                 fontWeight: 500,
                 height: 32,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                ml: { xs: 0, sm: 'auto' }
               }}
             />
           )}
@@ -606,8 +613,8 @@ const ResultsPage = () => {
 
       <Paper
         sx={{
-          p: 4,
-          mb: 5,
+          p: { xs: 2.5, md: 4 },
+          mb: { xs: 3, md: 5 },
           borderRadius: 3,
           boxShadow: '0 4px 16px rgba(0,0,0,0.08)'
         }}
@@ -616,18 +623,24 @@ const ResultsPage = () => {
           variant="h6"
           component="h2"
           sx={{
-            mb: 3,
+            mb: { xs: 2, md: 3 },
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
-            color: 'text.primary'
+            color: 'text.primary',
+            fontSize: { xs: '1.1rem', md: '1.25rem' }
           }}
         >
           <FilterListIcon sx={{ mr: 1.5, color: 'primary.main' }} />
           Filter & Sort Options
         </Typography>
 
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, alignItems: 'flex-start' }}>
+        <Box sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: { xs: 2, md: 3 },
+          alignItems: 'flex-start'
+        }}>
           <Box sx={{ width: { xs: '100%', sm: '47%', md: '22%' } }}>
             <FormControl fullWidth size="medium" sx={{ mb: 1 }}>
               <InputLabel id="sector-filter-label">Business Sector</InputLabel>
@@ -681,7 +694,12 @@ const ResultsPage = () => {
 
               {/* Custom location input field - only shown when "Others" is selected */}
               {locationFilter === 'Others' ? (
-                <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                <Box sx={{
+                  mt: 2,
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: { xs: 1.5, sm: 1 }
+                }}>
                   <TextField
                     fullWidth
                     size="small"
@@ -690,7 +708,7 @@ const ResultsPage = () => {
                     value={customLocation}
                     onChange={handleCustomLocationChange}
                     placeholder="e.g., Coimbatore, Trichy"
-                    // Using the non-deprecated way to add start adornment
+                    // Using direct props instead of deprecated InputProps
                     startAdornment={
                       <InputAdornment position="start">
                         <LocationOnIcon color="primary" fontSize="small" />
@@ -709,7 +727,8 @@ const ResultsPage = () => {
                     disabled={!customLocation.trim()}
                     sx={{
                       borderRadius: 2,
-                      minWidth: '80px'
+                      minWidth: { xs: '100%', sm: '80px' },
+                      height: { xs: '40px', sm: 'auto' }
                     }}
                   >
                     Apply
@@ -877,11 +896,8 @@ const ResultsPage = () => {
             </Stack>
           </Box>
 
-          <Grid container spacing={4} sx={{ mt: 1 }}>
+          <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ mt: { xs: 0.5, md: 1 } }}>
             {leads.map((lead, index) => {
-              // Add a console log to check each lead
-              console.log(`Rendering lead ${index}:`, lead);
-
               // Check if lead has required properties
               if (!lead || !lead.businessName) {
                 console.error(`Invalid lead at index ${index}:`, lead);
@@ -892,7 +908,7 @@ const ResultsPage = () => {
               const key = lead.id || `lead-${index}`;
 
               return (
-                <Grid item xs={12} md={6} lg={4} key={key} sx={{ mb: 4 }}>
+                <Grid item xs={12} sm={6} lg={4} key={key} sx={{ mb: { xs: 2, md: 4 } }}>
                   <Box sx={{
                     height: '100%',
                     display: 'flex',

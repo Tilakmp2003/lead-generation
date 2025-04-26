@@ -109,32 +109,31 @@ const SearchForm = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
       <Paper
         elevation={isHovered ? 12 : 6}
         sx={{
-          p: { xs: 3, md: 5 },
-          borderRadius: 4,
+          p: { xs: 2.5, sm: 3, md: 5 },
+          borderRadius: { xs: 3, md: 4 },
           transition: 'all 0.3s ease',
-          transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
+          transform: { xs: 'none', md: isHovered ? 'translateY(-5px)' : 'translateY(0)' },
           background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
-          border: '1px solid rgba(0,0,0,0.05)'
+          border: '1px solid rgba(0,0,0,0.05)',
+          width: '100%',
+          mx: 'auto'
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 3, md: 4 } }}>
           <Typography
             variant="h4"
             component="h2"
             gutterBottom
             sx={{
               fontWeight: 600,
-              background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
-              backgroundClip: 'text',
-              textFillColor: 'transparent',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+              color: 'black',
             }}
           >
             Find Retail Shop Owners
@@ -142,8 +141,13 @@ const SearchForm = () => {
           <Typography
             variant="subtitle1"
             paragraph
-            color="text.secondary"
-            sx={{ maxWidth: 700, mx: 'auto' }}
+            sx={{
+              maxWidth: 700,
+              mx: 'auto',
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              px: { xs: 1, sm: 0 },
+              color: 'black'
+            }}
           >
             Search for authenticated leads in your target location and export them to Google Sheets
           </Typography>
@@ -153,16 +157,17 @@ const SearchForm = () => {
           component="form"
           onSubmit={handleSubmit}
           sx={{
-            mt: 3,
+            mt: { xs: 2, md: 3 },
             maxWidth: 900,
             mx: 'auto',
             position: 'relative',
+            px: { xs: 0.5, sm: 1, md: 2 },
             '&::before': {
               content: '""',
               position: 'absolute',
               top: -15,
-              left: -15,
-              right: -15,
+              left: { xs: -5, md: -15 },
+              right: { xs: -5, md: -15 },
               bottom: -15,
               border: '2px dashed rgba(46, 125, 50, 0.2)',
               borderRadius: 5,
@@ -171,8 +176,8 @@ const SearchForm = () => {
             }
           }}
         >
-          <Grid container spacing={3} alignItems="center">
-            <Grid item xs={12} md={5}>
+          <Grid container spacing={{ xs: 2, md: 3 }} alignItems="center">
+            <Grid item xs={12} sm={6} md={5}>
               <FormControl fullWidth variant="outlined">
                 <InputLabel id="sector-label">Business Sector</InputLabel>
                 <Select
@@ -206,7 +211,7 @@ const SearchForm = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} sm={6} md={5}>
               <FormControl fullWidth variant="outlined">
                 <InputLabel id="location-label">Location</InputLabel>
                 <Select
@@ -238,9 +243,11 @@ const SearchForm = () => {
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
 
-              {/* Custom location input field - only shown when "Others" is selected */}
-              {location === 'Others' && (
+            {/* Custom location input field - only shown when "Others" is selected */}
+            {location === 'Others' && (
+              <Grid item xs={12} md={10}>
                 <TextField
                   fullWidth
                   label="Enter Custom Location"
@@ -250,7 +257,6 @@ const SearchForm = () => {
                   required
                   placeholder="e.g., Coimbatore, Trichy, Pondicherry"
                   sx={{
-                    mt: 2,
                     borderRadius: 2,
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
@@ -262,17 +268,19 @@ const SearchForm = () => {
                       },
                     }
                   }}
-                  // Using the non-deprecated way to add start adornment
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <LocationOnIcon color="primary" />
-                    </InputAdornment>
-                  }
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationOnIcon color="primary" />
+                      </InputAdornment>
+                    )
+                  }}
                 />
-              )}
-            </Grid>
+              </Grid>
+            )}
 
-            <Grid item xs={12} md={location === 'Others' ? 12 : 2} sx={{ mt: location === 'Others' ? 2 : 0 }}>
+            <Grid item xs={12} sm={location === 'Others' ? 12 : 6} md={location === 'Others' ? 12 : 2}
+              sx={{ mt: { xs: 1, md: location === 'Others' ? 2 : 0 } }}>
               <Zoom in={true} style={{ transitionDelay: '250ms' }}>
                 <Button
                   type="submit"
@@ -293,52 +301,75 @@ const SearchForm = () => {
             </Grid>
           </Grid>
 
-          <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
+          <Box sx={{
+            mt: { xs: 3, md: 4 },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            flexWrap: 'wrap',
+            gap: { xs: 1.5, md: 1 },
+            justifyContent: 'center',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            px: { xs: 1, md: 0 }
+          }}>
+            <Typography variant="body2" color="text.secondary" sx={{
+              mr: { xs: 0, sm: 1 },
+              mb: { xs: 1, sm: 0 },
+              textAlign: { xs: 'center', sm: 'left' },
+              width: { xs: '100%', sm: 'auto' }
+            }}>
               Popular searches:
             </Typography>
-            {[
-              { sector: 'Electronics', location: 'Madurai' },
-              { sector: 'Fashion', location: 'Chennai' },
-              { sector: 'Grocery', location: 'Bangalore' }
-            ].map((item, index) => (
-              <Chip
-                key={index}
-                label={`${item.sector} in ${item.location}`}
-                variant="outlined"
-                size="small"
-                onClick={() => {
-                  setSector(item.sector);
-                  setLocation(item.location);
+            <Box sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1.5,
+              justifyContent: 'center',
+              width: { xs: '100%', sm: 'auto' }
+            }}>
+              {[
+                { sector: 'Electronics', location: 'Madurai' },
+                { sector: 'Fashion', location: 'Chennai' },
+                { sector: 'Grocery', location: 'Bangalore' }
+              ].map((item, index) => (
+                <Chip
+                  key={index}
+                  label={`${item.sector} in ${item.location}`}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => {
+                    setSector(item.sector);
+                    setLocation(item.location);
 
-                  // Check if user is authenticated
-                  if (!isAuthenticated) {
-                    setSnackbarMessage('Please log in to search for leads');
-                    setSnackbarSeverity('info');
-                    setOpenSnackbar(true);
+                    // Check if user is authenticated
+                    if (!isAuthenticated) {
+                      setSnackbarMessage('Please log in to search for leads');
+                      setSnackbarSeverity('info');
+                      setOpenSnackbar(true);
 
-                    // Redirect to login page after a short delay
+                      // Redirect to login page after a short delay
+                      setTimeout(() => {
+                        navigate('/login');
+                      }, 1500);
+                      return;
+                    }
+
+                    // Submit the search immediately when clicking on a popular search
                     setTimeout(() => {
-                      navigate('/login');
-                    }, 1500);
-                    return;
-                  }
-
-                  // Submit the search immediately when clicking on a popular search
-                  setTimeout(() => {
-                    // Use the selected location directly since it's not "Others"
-                    navigate(`/results?sector=${encodeURIComponent(item.sector)}&location=${encodeURIComponent(item.location)}`);
-                  }, 100);
-                }}
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                    borderColor: 'primary.main'
-                  }
-                }}
-              />
-            ))}
+                      // Use the selected location directly since it's not "Others"
+                      navigate(`/results?sector=${encodeURIComponent(item.sector)}&location=${encodeURIComponent(item.location)}`);
+                    }, 100);
+                  }}
+                  sx={{
+                    cursor: 'pointer',
+                    height: '28px',
+                    '&:hover': {
+                      backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                      borderColor: 'primary.main'
+                    }
+                  }}
+                />
+              ))}
+            </Box>
           </Box>
         </Box>
       </Paper>
