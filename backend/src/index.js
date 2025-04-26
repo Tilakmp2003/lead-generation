@@ -1,4 +1,7 @@
-require('dotenv').config();
+// Load .env file only in non-production environments
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -25,10 +28,21 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 console.log('Allowed CORS Origins:', allowedOrigins);
 
 app.use(cors({
-  origin: allowedOrigins, // Directly use the array of allowed origins
+  origin: allowedOrigins,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // Explicitly allow headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200 // Explicitly set success status for preflight requests
+}));
+
+// Explicitly handle OPTIONS requests for all routes as a fallback
+// This helps ensure preflight requests are handled correctly.
+app.options('*', cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }));
 
 app.use(express.json()); // Parse JSON request body
