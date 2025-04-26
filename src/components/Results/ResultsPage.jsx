@@ -30,7 +30,6 @@ import LoginIcon from '@mui/icons-material/Login';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LeadCard from './LeadCard';
 import { businessSectors, locations, mockLeads } from '../../data/mockLeads';
-import { isSignedIn, signIn, createSheet, exportLeadsToSheet } from '../../services/googleSheetsService';
 import apiService from '../../services/apiService';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -340,132 +339,78 @@ const ResultsPage = () => {
     try {
       setLoading(true);
 
-      // Check if we're in development mode
-      const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      // Always create a CSV file for download
+      console.log('Creating CSV file for download.');
 
-      if (isDevelopment) {
-        // In development, create a CSV file for download instead of using Google Sheets
-        console.log('Development environment detected. Creating CSV file instead of using Google Sheets.');
+      // Create CSV content
+      const headers = [
+        'Business Name',
+        'Business Type',
+        'Owner Name',
+        'Email',
+        'Phone',
+        'Social Media',
+        'Address',
+        'Description',
+        'Verification Score'
+      ];
 
-        // Create CSV content
-        const headers = [
-          'Business Name',
-          'Business Type',
-          'Owner Name',
-          'Email',
-          'Phone',
-          'Social Media',
-          'Address',
-          'Description',
-          'Verification Score'
-        ];
+      const rows = leads.map(lead => [
+        lead.businessName,
+        lead.businessType,
+        lead.ownerName || '',
+        lead.contactDetails.email || '',
+        lead.contactDetails.phone || '',
+        Object.values(lead.contactDetails.socialMedia || {}).join(', '),
+        lead.address || '',
+        lead.description || '',
+        lead.verificationScore || 0
+      ]);
 
-        const rows = leads.map(lead => [
-          lead.businessName,
-          lead.businessType,
-          lead.ownerName || '',
-          lead.contactDetails.email || '',
-          lead.contactDetails.phone || '',
-          Object.values(lead.contactDetails.socialMedia || {}).join(', '),
-          lead.address || '',
-          lead.description || '',
-          lead.verificationScore || 0
-        ]);
+      // Combine headers and rows
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      ].join('\n');
 
-        // Combine headers and rows
-        const csvContent = [
-          headers.join(','),
-          ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-        ].join('\n');
+      // Create a blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Lead_Generation_${sector}_in_${locationFilter}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-        // Create a blob and download link
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `Lead_Generation_${sector}_in_${locationFilter}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      // Show success message
+      setSnackbarMessage('Leads exported to CSV file successfully!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
 
-        // Show success message
-        setSnackbarMessage('Leads exported to CSV file successfully!');
-        setSnackbarSeverity('success');
-        setOpenSnackbar(true);
-
-        // Save the export to the user's history
-        const userId = 'demo-user';
-        try {
-          await apiService.saveExport(
-            userId,
-            sector,
-            locationFilter,
-            leads.length,
-            'Local CSV Export'
-          );
-        } catch (saveError) {
-          console.error('Error saving export history:', saveError);
-        }
-      } else {
-        // Production environment - use Google Sheets API
-
-        // Check if user is signed in to Google
-        if (!isSignedIn()) {
-          await signIn();
-        }
-
-        // Create a new Google Sheet
-        const sheet = await createSheet(`Lead Generation - ${sector} in ${locationFilter}`);
-
-        // Export leads to the sheet
-        await exportLeadsToSheet(leads, sheet.spreadsheetId);
-
-        // Save the export to the user's history (if logged in)
-        // In a real app, you would get the user ID from authentication
-        const userId = 'demo-user';
-        try {
-          await apiService.saveExport(
-            userId,
-            sector,
-            locationFilter,
-            leads.length,
-            `https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`
-          );
-        } catch (saveError) {
-          console.error('Error saving export history:', saveError);
-          // Show warning but continue
-          setSnackbarMessage('Leads exported successfully, but there was an error saving to your history.');
-          setSnackbarSeverity('warning');
-          setOpenSnackbar(true);
-
-          // Open the sheet in a new tab
-          window.open(`https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`, '_blank');
-          return;
-        }
-
-        // Show success message
-        setSnackbarMessage('Leads exported to Google Sheets successfully!');
-        setSnackbarSeverity('success');
-        setOpenSnackbar(true);
-
-        // Open the sheet in a new tab
-        window.open(`https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`, '_blank');
+      // Save the export to the user's history
+      const userId = 'demo-user'; // Replace with actual user ID if available
+      try {
+        await apiService.saveExport(
+          userId,
+          sector,
+          locationFilter,
+          leads.length,
+          'Local CSV Export'
+        );
+      } catch (saveError) {
+        console.error('Error saving export history:', saveError);
+        // Optionally show a warning if saving history fails but download succeeded
+        setSnackbarMessage('Leads exported to CSV, but failed to save history.');
+        setSnackbarSeverity('warning');
+        setOpenSnackbar(true); // Re-open snackbar with warning
       }
+
     } catch (error) {
-      console.error('Error exporting leads:', error);
-
-      // Provide more specific error messages
-      if (error.message && error.message.includes('sign in')) {
-        setSnackbarMessage('Failed to sign in to Google. Please try again.');
-      } else if (error.message && error.message.includes('permission')) {
-        setSnackbarMessage('Permission denied. Please check your Google account permissions.');
-      } else if (error.message && error.message.includes('quota')) {
-        setSnackbarMessage('API quota exceeded. Please try again later.');
-      } else {
-        setSnackbarMessage('Failed to export leads. Please try again.');
-      }
-
+      // Catch errors specifically related to CSV generation/download
+      console.error('Error exporting leads to CSV:', error);
+      setSnackbarMessage('Failed to export leads to CSV. Please try again.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     } finally {
