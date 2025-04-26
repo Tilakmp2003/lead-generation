@@ -16,10 +16,7 @@ const authRoutes = require('./routes/auth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Apply middleware
-app.use(helmet()); // Security headers
-
-// Configure CORS
+// Configure CORS *FIRST*
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
   : ['http://localhost:5173', 'http://localhost:3000'];
@@ -32,11 +29,10 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200 // Explicitly set success status for preflight requests
+  optionsSuccessStatus: 200
 }));
 
-// Explicitly handle OPTIONS requests for all routes as a fallback
-// This helps ensure preflight requests are handled correctly.
+// Explicitly handle OPTIONS requests *before* other middleware
 app.options('*', cors({
   origin: allowedOrigins,
   credentials: true,
@@ -45,6 +41,8 @@ app.options('*', cors({
   optionsSuccessStatus: 200
 }));
 
+// Apply other middleware *after* CORS
+app.use(helmet()); // Security headers
 app.use(express.json()); // Parse JSON request body
 
 // Custom middleware to suppress specific 404 logs
