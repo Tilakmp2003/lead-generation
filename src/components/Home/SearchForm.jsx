@@ -109,12 +109,12 @@ const SearchForm = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+    <Container maxWidth="lg" sx={{ px: { xs: 1.5, sm: 3, md: 4 } }}>
       <Paper
         elevation={isHovered ? 12 : 6}
         sx={{
-          p: { xs: 2.5, sm: 3, md: 5 },
-          borderRadius: { xs: 3, md: 4 },
+          p: { xs: 2, sm: 3, md: 5 },
+          borderRadius: { xs: 2, md: 3 },
           transition: 'all 0.3s ease',
           transform: { xs: 'none', md: isHovered ? 'translateY(-5px)' : 'translateY(0)' },
           background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
@@ -125,15 +125,16 @@ const SearchForm = () => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Box sx={{ textAlign: 'center', mb: { xs: 3, md: 4 } }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 2.5, md: 4 } }}>
           <Typography
             variant="h4"
             component="h2"
             gutterBottom
             sx={{
               fontWeight: 600,
-              fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+              fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.25rem' },
               color: 'black',
+              mb: { xs: 1, md: 2 }
             }}
           >
             Find Retail Shop Owners
@@ -144,9 +145,10 @@ const SearchForm = () => {
             sx={{
               maxWidth: 700,
               mx: 'auto',
-              fontSize: { xs: '0.9rem', sm: '1rem' },
+              fontSize: { xs: '0.875rem', sm: '1rem' },
               px: { xs: 1, sm: 0 },
-              color: 'black'
+              color: 'text.secondary',
+              mb: { xs: 2, md: 3 }
             }}
           >
             Search for authenticated leads in your target location and export them to Google Sheets
@@ -161,7 +163,7 @@ const SearchForm = () => {
             maxWidth: 900,
             mx: 'auto',
             position: 'relative',
-            px: { xs: 0.5, sm: 1, md: 2 },
+            px: { xs: 0, sm: 1, md: 2 },
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -176,9 +178,9 @@ const SearchForm = () => {
             }
           }}
         >
-          <Grid container spacing={{ xs: 2, md: 3 }} alignItems="center">
+          <Grid container spacing={{ xs: 2, md: 3 }} alignItems="flex-start">
             <Grid item xs={12} sm={6} md={5}>
-              <FormControl fullWidth variant="outlined">
+              <FormControl fullWidth variant="outlined" size="medium">
                 <InputLabel id="sector-label">Business Sector</InputLabel>
                 <Select
                   labelId="sector-label"
@@ -187,13 +189,9 @@ const SearchForm = () => {
                   label="Business Sector"
                   onChange={handleSectorChange}
                   required
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <CategoryIcon color="primary" />
-                    </InputAdornment>
-                  }
                   sx={{
                     borderRadius: 2,
+                    height: { xs: '48px', md: '56px' },
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: 'rgba(0, 0, 0, 0.1)',
                     },
@@ -201,9 +199,14 @@ const SearchForm = () => {
                       borderColor: 'primary.main',
                     },
                   }}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <CategoryIcon color="primary" sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }} />
+                    </InputAdornment>
+                  }
                 >
                   {businessSectors.map((sector) => (
-                    <MenuItem key={sector} value={sector}>
+                    <MenuItem key={sector} value={sector} sx={{ py: { xs: 1, md: 1.5 } }}>
                       {sector}
                     </MenuItem>
                   ))}
@@ -212,7 +215,7 @@ const SearchForm = () => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={5}>
-              <FormControl fullWidth variant="outlined">
+              <FormControl fullWidth variant="outlined" size="medium">
                 <InputLabel id="location-label">Location</InputLabel>
                 <Select
                   labelId="location-label"
@@ -221,13 +224,9 @@ const SearchForm = () => {
                   label="Location"
                   onChange={handleLocationChange}
                   required
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <LocationOnIcon color="primary" />
-                    </InputAdornment>
-                  }
                   sx={{
                     borderRadius: 2,
+                    height: { xs: '48px', md: '56px' },
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: 'rgba(0, 0, 0, 0.1)',
                     },
@@ -235,9 +234,14 @@ const SearchForm = () => {
                       borderColor: 'primary.main',
                     },
                   }}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <LocationOnIcon color="primary" sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }} />
+                    </InputAdornment>
+                  }
                 >
                   {locations.map((loc) => (
-                    <MenuItem key={loc} value={loc}>
+                    <MenuItem key={loc} value={loc} sx={{ py: { xs: 1, md: 1.5 } }}>
                       {loc}
                     </MenuItem>
                   ))}
@@ -257,9 +261,9 @@ const SearchForm = () => {
                   required
                   placeholder="e.g., Coimbatore, Trichy, Pondicherry"
                   sx={{
-                    borderRadius: 2,
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
+                      height: { xs: '48px', md: '56px' },
                       '& fieldset': {
                         borderColor: 'rgba(0, 0, 0, 0.1)',
                       },
@@ -271,7 +275,7 @@ const SearchForm = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LocationOnIcon color="primary" />
+                        <LocationOnIcon color="primary" sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }} />
                       </InputAdornment>
                     )
                   }}
@@ -279,20 +283,34 @@ const SearchForm = () => {
               </Grid>
             )}
 
-            <Grid item xs={12} sm={location === 'Others' ? 12 : 6} md={location === 'Others' ? 12 : 2}
-              sx={{ mt: { xs: 1, md: location === 'Others' ? 2 : 0 } }}>
+            <Grid 
+              item 
+              xs={12} 
+              sm={location === 'Others' ? 12 : 6} 
+              md={location === 'Others' ? 12 : 2}
+              sx={{ 
+                mt: { 
+                  xs: location === 'Others' ? 0 : 1, 
+                  md: location === 'Others' ? 2 : 0 
+                } 
+              }}
+            >
               <Zoom in={true} style={{ transitionDelay: '250ms' }}>
                 <Button
                   type="submit"
                   variant="contained"
                   fullWidth
                   sx={{
-                    height: '56px',
+                    height: { xs: '48px', md: '56px' },
                     borderRadius: 2,
                     fontWeight: 600,
-                    fontSize: '1rem'
+                    fontSize: { xs: '0.875rem', md: '1rem' },
+                    boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
+                    '&:hover': {
+                      boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)',
+                    }
                   }}
-                  startIcon={loading ? null : <SearchIcon />}
+                  startIcon={loading ? null : <SearchIcon sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }} />}
                   disabled={loading || !sector || !location || (location === 'Others' && !customLocation.trim())}
                 >
                   {loading ? 'Searching...' : 'Search'}
@@ -308,21 +326,20 @@ const SearchForm = () => {
             flexWrap: 'wrap',
             gap: { xs: 1.5, md: 1 },
             justifyContent: 'center',
-            alignItems: { xs: 'flex-start', sm: 'center' },
-            px: { xs: 1, md: 0 }
+            alignItems: { xs: 'flex-start', sm: 'center' }
           }}>
             <Typography variant="body2" color="text.secondary" sx={{
               mr: { xs: 0, sm: 1 },
               mb: { xs: 1, sm: 0 },
               textAlign: { xs: 'center', sm: 'left' },
-              width: { xs: '100%', sm: 'auto' }
+              fontSize: { xs: '0.875rem', md: '1rem' }
             }}>
               Popular searches:
             </Typography>
             <Box sx={{
               display: 'flex',
               flexWrap: 'wrap',
-              gap: 1.5,
+              gap: 1,
               justifyContent: 'center',
               width: { xs: '100%', sm: 'auto' }
             }}>
@@ -361,7 +378,8 @@ const SearchForm = () => {
                   }}
                   sx={{
                     cursor: 'pointer',
-                    height: '28px',
+                    height: { xs: '28px', md: '32px' },
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
                     '&:hover': {
                       backgroundColor: 'rgba(46, 125, 50, 0.1)',
                       borderColor: 'primary.main'
@@ -380,7 +398,14 @@ const SearchForm = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbarSeverity} 
+          sx={{ 
+            width: '100%',
+            fontSize: { xs: '0.875rem', md: '1rem' }
+          }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

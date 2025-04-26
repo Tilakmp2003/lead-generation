@@ -26,28 +26,26 @@ const HomePage = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Hero Section with Background Image */}
-      <Box
-        sx={{
-          position: 'relative',
-          height: '600px',
-          display: 'flex',
-          alignItems: 'center',
-          color: 'white',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            zIndex: -1,
-          }
-        }}
-      >
+      <Box sx={{ 
+        position: 'relative',
+        height: { xs: '500px', md: '600px' },
+        display: 'flex',
+        alignItems: 'center',
+        color: 'white',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          zIndex: -1,
+        }
+      }}>
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={7}>
@@ -58,7 +56,9 @@ const HomePage = () => {
                 sx={{
                   fontWeight: 700,
                   color: 'black',
-                  mb: 3
+                  mb: 3,
+                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
+                  textAlign: { xs: 'center', md: 'left' }
                 }}
               >
                 Find Retail Shop Owners in Any Location
@@ -69,12 +69,14 @@ const HomePage = () => {
                 sx={{
                   mb: 4,
                   color: 'black',
-                  maxWidth: '90%'
+                  maxWidth: '90%',
+                  fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                  textAlign: { xs: 'center', md: 'left' },
+                  mx: { xs: 'auto', md: 0 }
                 }}
               >
                 Get verified contact details of retail shop owners and export them directly to Google Sheets
               </Typography>
-
             </Grid>
             <Grid item xs={12} md={5} sx={{ display: { xs: 'none', md: 'block' } }}>
               <Box
@@ -98,17 +100,21 @@ const HomePage = () => {
       </Box>
 
       {/* Stats Section */}
-      <Container maxWidth="lg" sx={{ mt: -5, position: 'relative', zIndex: 1 }}>
-        <Paper elevation={24} sx={{ borderRadius: 4, py: 3 }}>
+      <Container maxWidth="lg" sx={{ mt: { xs: -3, md: -5 }, position: 'relative', zIndex: 1, px: { xs: 2, sm: 3, md: 4 } }}>
+        <Paper elevation={24} sx={{ borderRadius: 4, py: { xs: 2, md: 3 } }}>
           <Grid container>
             <Grid item xs={12} md={4} sx={{
-              p: 3,
+              p: { xs: 2, md: 3 },
               textAlign: 'center',
               borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
               borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
             }}>
-              <Typography variant="h3" component="div" color="primary" fontWeight="bold">10K+</Typography>
-              <Typography variant="subtitle1">Verified Business Leads</Typography>
+              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
+                10K+
+              </Typography>
+              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
+                Verified Business Leads
+              </Typography>
             </Grid>
             <Grid item xs={12} md={4} sx={{
               p: 3,
@@ -133,14 +139,18 @@ const HomePage = () => {
       </Box>
 
       {/* How It Works Section */}
-      <Box sx={{ py: 8, bgcolor: 'grey.50' }}>
-        <Container maxWidth="lg">
+      <Box sx={{ py: { xs: 6, md: 8 }, bgcolor: 'grey.50' }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Typography
             variant="h3"
             component="h2"
             align="center"
             gutterBottom
-            sx={{ mb: 2, fontWeight: 600 }}
+            sx={{ 
+              mb: { xs: 1, md: 2 }, 
+              fontWeight: 600,
+              fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
+            }}
           >
             How It Works
           </Typography>
@@ -148,12 +158,18 @@ const HomePage = () => {
             variant="subtitle1"
             align="center"
             color="text.secondary"
-            sx={{ mb: 6, maxWidth: 700, mx: 'auto' }}
+            sx={{ 
+              mb: { xs: 4, md: 6 }, 
+              maxWidth: 700, 
+              mx: 'auto',
+              fontSize: { xs: '0.875rem', sm: '1rem' },
+              px: { xs: 2, sm: 0 }
+            }}
           >
             Our lead generation process is simple, fast, and effective
           </Typography>
 
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={{ xs: 3, md: 4 }} justifyContent="center">
             <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Paper
                 elevation={0}
@@ -278,13 +294,17 @@ const HomePage = () => {
       </Box>
 
       {/* Features Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 }, px: { xs: 2, sm: 3, md: 4 } }}>
         <Typography
           variant="h3"
           component="h2"
           gutterBottom
           align="center"
-          sx={{ mb: 2, fontWeight: 600 }}
+          sx={{ 
+            mb: { xs: 1, md: 2 }, 
+            fontWeight: 600,
+            fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
+          }}
         >
           Why Choose Our Lead Generation Tool?
         </Typography>
@@ -292,12 +312,18 @@ const HomePage = () => {
           variant="subtitle1"
           align="center"
           color="text.secondary"
-          sx={{ mb: 6, maxWidth: 700, mx: 'auto' }}
+          sx={{ 
+            mb: { xs: 4, md: 6 }, 
+            maxWidth: 700, 
+            mx: 'auto',
+            fontSize: { xs: '0.875rem', sm: '1rem' },
+            px: { xs: 2, sm: 0 }
+          }}
         >
           We provide the most accurate and comprehensive business lead data
         </Typography>
 
-        <Grid container spacing={4} justifyContent="center">
+        <Grid container spacing={{ xs: 3, md: 4 }} justifyContent="center">
           <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
             <Card sx={{ height: '100%', overflow: 'visible', width: '100%', maxWidth: 350 }}>
               <Box
@@ -489,8 +515,9 @@ const HomePage = () => {
       {/* Testimonials Section */}
       <Box
         sx={{
-          py: 10,
+          py: { xs: 8, md: 10 },
           position: 'relative',
+          px: { xs: 2, sm: 3, md: 4 },
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -541,7 +568,7 @@ const HomePage = () => {
         </Box>
 
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
             <Typography
               variant="h3"
               component="h2"
@@ -551,13 +578,14 @@ const HomePage = () => {
                 position: 'relative',
                 display: 'inline-block',
                 color: 'black',
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
                 '&::after': {
                   content: '""',
                   position: 'absolute',
                   bottom: -10,
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  width: 80,
+                  width: { xs: 60, md: 80 },
                   height: 4,
                   backgroundColor: 'black',
                   borderRadius: 2
@@ -573,7 +601,9 @@ const HomePage = () => {
                 maxWidth: 700,
                 mx: 'auto',
                 color: 'black',
-                fontWeight: 500
+                fontWeight: 500,
+                fontSize: { xs: '1rem', sm: '1.25rem' },
+                px: { xs: 2, sm: 0 }
               }}
             >
               Hear from businesses that have transformed their lead generation process
@@ -705,13 +735,16 @@ const HomePage = () => {
       </Box>
 
       {/* Call to Action */}
-      <Box sx={{ py: 10, textAlign: 'center' }}>
+      <Box sx={{ py: { xs: 8, md: 10 }, textAlign: 'center', px: { xs: 2, sm: 3, md: 4 } }}>
         <Container maxWidth="md">
           <Typography
             variant="h3"
             component="h2"
             gutterBottom
-            sx={{ fontWeight: 700 }}
+            sx={{ 
+              fontWeight: 700,
+              fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
+            }}
           >
             Ready to Generate Quality Leads?
           </Typography>
@@ -719,7 +752,13 @@ const HomePage = () => {
             variant="h6"
             paragraph
             color="text.secondary"
-            sx={{ mb: 4, maxWidth: 700, mx: 'auto' }}
+            sx={{ 
+              mb: 4, 
+              maxWidth: 700, 
+              mx: 'auto',
+              fontSize: { xs: '1rem', sm: '1.25rem' },
+              px: { xs: 2, sm: 0 }
+            }}
           >
             Start searching for retail shop owners and export their contact details to Google Sheets today.
           </Typography>

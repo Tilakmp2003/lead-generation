@@ -537,19 +537,19 @@ const ResultsPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: { xs: 2, md: 4 }, mb: { xs: 6, md: 8 }, px: { xs: 2, sm: 3, md: 4 } }}>
-      <Box sx={{ mb: { xs: 3, md: 5 }, mt: { xs: 1, md: 2 } }}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 1, md: 4 }, mb: { xs: 6, md: 8 }, px: { xs: 1, sm: 3, md: 4 } }}>
+      <Box sx={{ mb: { xs: 2, md: 5 }, mt: { xs: 0.5, md: 2 } }}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/')}
           sx={{
-            mb: { xs: 2, md: 3 },
+            mb: { xs: 1.5, md: 3 },
             borderRadius: 2,
-            px: 2,
+            px: { xs: 1.5, md: 2 },
             py: 0.8,
             textTransform: 'none',
             fontWeight: 500,
-            fontSize: { xs: '0.85rem', md: '0.9rem' },
+            fontSize: { xs: '0.75rem', md: '0.9rem' },
             boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
             '&:hover': {
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
@@ -565,8 +565,8 @@ const ResultsPage = () => {
           gutterBottom
           sx={{
             fontWeight: 700,
-            fontSize: { xs: '1.5rem', sm: '1.8rem', md: '2.2rem' },
-            mb: { xs: 1.5, md: 2 },
+            fontSize: { xs: '1.25rem', sm: '1.8rem', md: '2.2rem' },
+            mb: { xs: 1, md: 2 },
             color: 'text.primary'
           }}
         >
@@ -578,16 +578,16 @@ const ResultsPage = () => {
           flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
           flexWrap: 'wrap',
-          gap: { xs: 1.5, md: 2 },
+          gap: { xs: 1, md: 2 },
           bgcolor: 'rgba(46, 125, 50, 0.05)',
-          p: { xs: 2, md: 2.5 },
+          p: { xs: 1.5, md: 2.5 },
           borderRadius: 3,
           border: '1px solid rgba(46, 125, 50, 0.1)',
           boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
         }}>
           <Typography variant="body1" sx={{
             fontWeight: 500,
-            fontSize: { xs: '0.95rem', md: '1.05rem' },
+            fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.05rem' },
             width: { xs: '100%', sm: 'auto' }
           }}>
             Found <strong>{leads.length}</strong> leads for <strong>{sector}</strong> businesses in <strong>{locationFilter}</strong>
@@ -595,16 +595,18 @@ const ResultsPage = () => {
 
           {leads.length > 0 && (
             <Chip
-              icon={<VerifiedUserIcon />}
+              icon={<VerifiedUserIcon sx={{ fontSize: { xs: '0.9rem', md: '1.25rem' } }} />}
               label={`Min. Verification: ${minVerificationScore}%`}
               color="primary"
               variant="outlined"
-              size="medium"
+              size="small"
               sx={{
                 fontWeight: 500,
-                height: 32,
+                height: { xs: 24, md: 32 },
+                fontSize: { xs: '0.7rem', md: '0.875rem' },
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                ml: { xs: 0, sm: 'auto' }
+                ml: { xs: 0, sm: 'auto' },
+                '& .MuiChip-label': { px: { xs: 1, md: 1.5 } }
               }}
             />
           )}
@@ -613,8 +615,8 @@ const ResultsPage = () => {
 
       <Paper
         sx={{
-          p: { xs: 2.5, md: 4 },
-          mb: { xs: 3, md: 5 },
+          p: { xs: 1.5, sm: 2.5, md: 4 },
+          mb: { xs: 2, sm: 3, md: 5 },
           borderRadius: 3,
           boxShadow: '0 4px 16px rgba(0,0,0,0.08)'
         }}
@@ -623,27 +625,27 @@ const ResultsPage = () => {
           variant="h6"
           component="h2"
           sx={{
-            mb: { xs: 2, md: 3 },
+            mb: { xs: 1.5, sm: 2, md: 3 },
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
             color: 'text.primary',
-            fontSize: { xs: '1.1rem', md: '1.25rem' }
+            fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.25rem' }
           }}
         >
-          <FilterListIcon sx={{ mr: 1.5, color: 'primary.main' }} />
+          <FilterListIcon sx={{ mr: 1, fontSize: { xs: '1.1rem', md: '1.5rem' }, color: 'primary.main' }} />
           Filter & Sort Options
         </Typography>
 
         <Box sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: { xs: 2, md: 3 },
+          gap: { xs: 1.5, sm: 2, md: 3 },
           alignItems: 'flex-start'
         }}>
           <Box sx={{ width: { xs: '100%', sm: '47%', md: '22%' } }}>
-            <FormControl fullWidth size="medium" sx={{ mb: 1 }}>
-              <InputLabel id="sector-filter-label">Business Sector</InputLabel>
+            <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+              <InputLabel id="sector-filter-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Business Sector</InputLabel>
               <Select
                 labelId="sector-filter-label"
                 id="sector-filter"
@@ -652,21 +654,22 @@ const ResultsPage = () => {
                 onChange={handleSectorChange}
                 sx={{
                   borderRadius: 2,
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: 'rgba(0, 0, 0, 0.12)'
                   }
                 }}
               >
                 {businessSectors.map((s) => (
-                  <MenuItem key={s} value={s}>{s}</MenuItem>
+                  <MenuItem key={s} value={s} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>{s}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Box>
 
           <Box sx={{ width: { xs: '100%', sm: '47%', md: '22%' } }}>
-            <FormControl fullWidth size="medium" sx={{ mb: 1 }}>
-              <InputLabel id="location-filter-label">Location</InputLabel>
+            <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+              <InputLabel id="location-filter-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Location</InputLabel>
               <Select
                 labelId="location-filter-label"
                 id="location-filter"
@@ -675,19 +678,24 @@ const ResultsPage = () => {
                 onChange={handleLocationChange}
                 sx={{
                   borderRadius: 2,
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: 'rgba(0, 0, 0, 0.12)'
                   }
                 }}
               >
                 {locations.map((loc) => (
-                  <MenuItem key={loc} value={loc}>{loc}</MenuItem>
+                  <MenuItem key={loc} value={loc} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>{loc}</MenuItem>
                 ))}
               </Select>
 
               {/* Show the current custom location if it's not in the predefined list */}
               {!locations.includes(locationFilter) && locationFilter !== 'All' && (
-                <Typography variant="body2" color="primary" sx={{ mt: 1, fontStyle: 'italic' }}>
+                <Typography variant="body2" color="primary" sx={{
+                  mt: 1,
+                  fontStyle: 'italic',
+                  fontSize: { xs: '0.7rem', md: '0.75rem' }
+                }}>
                   Current: {locationFilter}
                 </Typography>
               )}
@@ -695,10 +703,10 @@ const ResultsPage = () => {
               {/* Custom location input field - only shown when "Others" is selected */}
               {locationFilter === 'Others' ? (
                 <Box sx={{
-                  mt: 2,
+                  mt: 1.5,
                   display: 'flex',
                   flexDirection: { xs: 'column', sm: 'row' },
-                  gap: { xs: 1.5, sm: 1 }
+                  gap: { xs: 1, sm: 1 }
                 }}>
                   <TextField
                     fullWidth
@@ -711,12 +719,18 @@ const ResultsPage = () => {
                     // Using direct props instead of deprecated InputProps
                     startAdornment={
                       <InputAdornment position="start">
-                        <LocationOnIcon color="primary" fontSize="small" />
+                        <LocationOnIcon color="primary" fontSize="small" sx={{ fontSize: { xs: '0.9rem', md: '1.25rem' } }} />
                       </InputAdornment>
                     }
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         borderRadius: 2,
+                      },
+                      '& .MuiInputLabel-root': {
+                        fontSize: { xs: '0.75rem', md: '0.875rem' }
+                      },
+                      '& .MuiOutlinedInput-input': {
+                        fontSize: { xs: '0.75rem', md: '0.875rem' }
                       }
                     }}
                   />
@@ -728,7 +742,9 @@ const ResultsPage = () => {
                     sx={{
                       borderRadius: 2,
                       minWidth: { xs: '100%', sm: '80px' },
-                      height: { xs: '40px', sm: 'auto' }
+                      height: { xs: '32px', sm: 'auto' },
+                      fontSize: { xs: '0.75rem', md: '0.875rem' },
+                      py: { xs: 0.5, md: 1 }
                     }}
                   >
                     Apply
@@ -739,52 +755,54 @@ const ResultsPage = () => {
           </Box>
 
           <Box sx={{ width: { xs: '100%', sm: '47%', md: '22%' } }}>
-            <FormControl fullWidth size="medium" sx={{ mb: 1 }}>
-              <InputLabel id="sort-label">Sort By</InputLabel>
+            <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+              <InputLabel id="sort-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Sort By</InputLabel>
               <Select
                 labelId="sort-label"
                 id="sort-select"
                 value={sortBy}
                 label="Sort By"
                 onChange={handleSortChange}
-                startAdornment={<SortIcon sx={{ mr: 1, color: 'primary.main' }} />}
+                startAdornment={<SortIcon sx={{ mr: 1, color: 'primary.main', fontSize: { xs: '0.9rem', md: '1.25rem' } }} />}
                 sx={{
                   borderRadius: 2,
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: 'rgba(0, 0, 0, 0.12)'
                   }
                 }}
               >
-                <MenuItem value="businessName">Business Name</MenuItem>
-                <MenuItem value="businessType">Business Type</MenuItem>
-                <MenuItem value="location">Location</MenuItem>
-                <MenuItem value="verificationScore">Verification Score</MenuItem>
+                <MenuItem value="businessName" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Business Name</MenuItem>
+                <MenuItem value="businessType" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Business Type</MenuItem>
+                <MenuItem value="location" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Location</MenuItem>
+                <MenuItem value="verificationScore" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Verification Score</MenuItem>
               </Select>
             </FormControl>
           </Box>
 
           <Box sx={{ width: { xs: '100%', sm: '47%', md: '32%' } }}>
-            <FormControl fullWidth size="medium" sx={{ mb: 1 }}>
-              <InputLabel id="verification-label">Min. Verification Score</InputLabel>
+            <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+              <InputLabel id="verification-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Min. Verification Score</InputLabel>
               <Select
                 labelId="verification-label"
                 id="verification-select"
                 value={minVerificationScore}
                 label="Min. Verification Score"
                 onChange={handleVerificationScoreChange}
-                startAdornment={<VerifiedUserIcon sx={{ mr: 1, color: 'primary.main' }} />}
+                startAdornment={<VerifiedUserIcon sx={{ mr: 1, color: 'primary.main', fontSize: { xs: '0.9rem', md: '1.25rem' } }} />}
                 sx={{
                   borderRadius: 2,
+                  fontSize: { xs: '0.75rem', md: '0.875rem' },
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: 'rgba(0, 0, 0, 0.12)'
                   }
                 }}
               >
-                <MenuItem value={0}>All Leads (0%+)</MenuItem>
-                <MenuItem value={25}>Basic Verification (25%+)</MenuItem>
-                <MenuItem value={50}>Standard Verification (50%+)</MenuItem>
-                <MenuItem value={75}>High Verification (75%+)</MenuItem>
-                <MenuItem value={90}>Premium Verification (90%+)</MenuItem>
+                <MenuItem value={0} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>All Leads (0%+)</MenuItem>
+                <MenuItem value={25} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Basic Verification (25%+)</MenuItem>
+                <MenuItem value={50} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Standard Verification (50%+)</MenuItem>
+                <MenuItem value={75} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>High Verification (75%+)</MenuItem>
+                <MenuItem value={90} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Premium Verification (90%+)</MenuItem>
               </Select>
             </FormControl>
           </Box>
