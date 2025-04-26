@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp public/_redirects dist/ && cp vercel.json dist/",
-    "build:vercel": "vite build",
+    "build": "npx vite build && cp public/_redirects dist/ && cp vercel.json dist/",
+    "build:vercel": "npx vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
