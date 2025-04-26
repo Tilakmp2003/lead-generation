@@ -9,11 +9,13 @@ const DISCOVERY_DOCS = [
 ];
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
 
+let tokenClient;
+
 // Initialize the Google API client
 export const initGoogleSheetsAPI = () => {
   return new Promise((resolve, reject) => {
     const waitForGapi = () => {
-      if (!window.gapi) {
+      if (!window.gapi || !window.google) {
         setTimeout(waitForGapi, 100);
         return;
       }
@@ -40,17 +42,21 @@ export const initGoogleSheetsAPI = () => {
       }
 
       // Initialize the real API for production
-      window.gapi.load('client:auth2', async () => {
+      window.gapi.load('client', async () => {
         try {
           await window.gapi.client.init({
             apiKey: API_KEY,
-            clientId: CLIENT_ID,
             discoveryDocs: DISCOVERY_DOCS,
+          });
+
+          // Initialize the tokenClient
+          tokenClient = window.google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
             scope: SCOPES,
+            callback: '', // defined at request time
+            prompt: 'consent',
             ux_mode: 'redirect',
-            redirect_uri: `${window.location.origin}/oauth2callback`,
-            access_type: 'offline',
-            include_granted_scopes: true
+            redirect_uri: `${window.location.origin}/oauth2callback`
           });
           
           // Additional check to ensure Sheets API is loaded
@@ -72,42 +78,47 @@ export const initGoogleSheetsAPI = () => {
 };
 
 // Sign in the user with improved error handling
-export const signIn = async () => {
-  try {
-    const auth2 = window.gapi.auth2.getAuthInstance();
-    const options = {
-      prompt: 'consent',
-      ux_mode: 'redirect',
-      redirect_uri: `${window.location.origin}/oauth2callback`,
-      access_type: 'offline',
-      include_granted_scopes: true
-    };
-    
-    console.log('Starting Google Sign In with options:', options);
-    const user = await auth2.signIn(options);
-    return user;
-  } catch (error) {
-    console.error('Google Sign In Error:', error);
-    if (error.error === 'popup_closed_by_user') {
-      throw new Error('Sign in was cancelled. Please try again.');
-    } else if (error.error === 'access_denied') {
-      throw new Error('Please grant access to Google Sheets to export leads.');
-    } else if (error.error === 'idpiframe_initialization_failed') {
-      throw new Error('Google Sign In is not properly configured. Please check your domain settings.');
-    } else {
-      throw error;
+export const signIn = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      tokenClient.callback = async (response) => {
+        if (response.error) {
+          reject(response);
+          return;
+        }
+        
+        // Store the access token
+        localStorage.setItem('gapi_access_token', response.access_token);
+        resolve(response);
+      };
+
+      if (localStorage.getItem('gapi_access_token')) {
+        // Token exists, verify it
+        window.gapi.client.setToken({
+          access_token: localStorage.getItem('gapi_access_token')
+        });
+        resolve({ access_token: localStorage.getItem('gapi_access_token') });
+      } else {
+        // Request authorization
+        tokenClient.requestAccessToken();
+      }
+    } catch (error) {
+      console.error('Google Sign In Error:', error);
+      reject(error);
     }
-  }
+  });
 };
 
 // Sign out the user
 export const signOut = () => {
-  return window.gapi.auth2.getAuthInstance().signOut();
+  localStorage.removeItem('gapi_access_token');
+  window.gapi.client.setToken(null);
+  return Promise.resolve();
 };
 
 // Check if user is signed in
 export const isSignedIn = () => {
-  return window.gapi.auth2.getAuthInstance().isSignedIn.get();
+  return !!localStorage.getItem('gapi_access_token');
 };
 
 // Create a new Google Sheet
@@ -116,7 +127,6 @@ export const createSheet = async (title) => {
     // Check if we're in development mode with mock implementation
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       console.log('Creating mock Google Sheet:', title);
-      // Return a mock spreadsheet object
       return {
         spreadsheetId: 'mock-sheet-id-' + Date.now(),
         spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/mock-sheet-id',
@@ -124,6 +134,11 @@ export const createSheet = async (title) => {
           title: title
         }
       };
+    }
+
+    // Ensure we have a valid token
+    if (!isSignedIn()) {
+      await signIn();
     }
 
     // Real implementation for production
@@ -143,6 +158,11 @@ export const createSheet = async (title) => {
 // Export leads to Google Sheets
 export const exportLeadsToSheet = async (leads, sheetId) => {
   try {
+    // Ensure we have a valid token
+    if (!isSignedIn()) {
+      await signIn();
+    }
+
     // Prepare headers
     const headers = [
       'Business Name',
@@ -150,21 +170,23 @@ export const exportLeadsToSheet = async (leads, sheetId) => {
       'Owner Name',
       'Email',
       'Phone',
-      'Social Media',
+      'Website',
       'Address',
-      'Description'
+      'Description',
+      'Verification Score'
     ];
 
     // Prepare data rows
     const rows = leads.map(lead => [
       lead.businessName,
       lead.businessType,
-      lead.ownerName,
-      lead.contactDetails.email,
-      lead.contactDetails.phone,
-      Object.values(lead.contactDetails.socialMedia || {}).join(', '),
-      lead.address,
-      lead.description
+      lead.ownerName || '',
+      lead.contactDetails?.email || '',
+      lead.contactDetails?.phone || '',
+      lead.contactDetails?.website || '',
+      lead.address || '',
+      lead.description || '',
+      lead.verificationScore || ''
     ]);
 
     // Combine headers and rows
@@ -174,11 +196,10 @@ export const exportLeadsToSheet = async (leads, sheetId) => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       console.log('Exporting leads to mock Google Sheet:', sheetId);
       console.log('Data being exported:', values);
-      // Return a mock response
       return {
         spreadsheetId: sheetId,
         updatedCells: values.flat().length,
-        updatedRange: 'Sheet1!A1:H' + (leads.length + 1)
+        updatedRange: 'Sheet1!A1:I' + (leads.length + 1)
       };
     }
 
@@ -202,10 +223,14 @@ export const exportLeadsToSheet = async (leads, sheetId) => {
 // Get a list of user's spreadsheets
 export const getSpreadsheets = async () => {
   try {
+    // Ensure we have a valid token
+    if (!isSignedIn()) {
+      await signIn();
+    }
+
     // Check if we're in development mode with mock implementation
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       console.log('Getting mock spreadsheets list');
-      // Return mock spreadsheets
       return [
         { id: 'mock-sheet-id-1', name: 'Mock Spreadsheet 1' },
         { id: 'mock-sheet-id-2', name: 'Mock Spreadsheet 2' },
