@@ -25,10 +25,10 @@ import StarIcon from '@mui/icons-material/Star';
 const HomePage = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      {/* Hero Section */}
+      {/* Hero Section with Background Image */}
       <Box sx={{
         position: 'relative',
-        height: { xs: '500px', sm: '550px', md: '650px', lg: '700px' },
+        height: { xs: '500px', md: '600px' },
         display: 'flex',
         alignItems: 'center',
         color: 'white',
@@ -40,68 +40,57 @@ const HomePage = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.85)), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url("https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           zIndex: -1,
         }
       }}>
-        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 4, md: 6, lg: 8 } }}>
-          <Grid container spacing={{ xs: 4, sm: 6, md: 8 }} alignItems="center" justifyContent="space-between">
-            <Grid item xs={12} md={6} lg={5}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={7}>
               <Typography
                 variant="h2"
                 component="h1"
                 gutterBottom
                 sx={{
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: 'black',
-                  mb: { xs: 2, sm: 3, md: 4 },
-                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem', lg: '4rem' },
-                  textAlign: { xs: 'center', md: 'left' },
-                  lineHeight: { xs: 1.3, md: 1.2 }
+                  mb: 3,
+                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
+                  textAlign: { xs: 'center', md: 'left' }
                 }}
               >
                 Find Retail Shop Owners in Any Location
               </Typography>
               <Typography
                 variant="h5"
+                paragraph
                 sx={{
-                  mb: { xs: 3, sm: 4, md: 5 },
-                  color: 'text.secondary',
-                  maxWidth: { xs: '100%', md: '90%' },
+                  mb: 4,
+                  color: 'black',
+                  maxWidth: '90%',
                   fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
                   textAlign: { xs: 'center', md: 'left' },
-                  lineHeight: { xs: 1.5, md: 1.4 }
+                  mx: { xs: 'auto', md: 0 }
                 }}
               >
                 Get verified contact details of retail shop owners and export them directly to Google Sheets
               </Typography>
             </Grid>
-            <Grid 
-              item 
-              xs={12} 
-              md={6} 
-              lg={6}
-              sx={{ 
-                display: { xs: 'none', md: 'block' },
-                position: 'relative'
-              }}
-            >
+            <Grid item xs={12} md={5} sx={{ display: { xs: 'none', md: 'block' } }}>
               <Box
                 component="img"
                 src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
                 alt="Lead Generation"
                 sx={{
                   width: '100%',
-                  maxWidth: { md: '500px', lg: '600px' },
-                  borderRadius: { md: 4, lg: 6 },
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                  borderRadius: 4,
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
                   transform: 'perspective(1000px) rotateY(-15deg)',
-                  transition: 'all 0.5s ease',
+                  transition: 'transform 0.5s ease',
                   '&:hover': {
                     transform: 'perspective(1000px) rotateY(-5deg) scale(1.02)',
-                    boxShadow: '0 30px 60px rgba(0,0,0,0.35)',
                   }
                 }}
               />
@@ -111,55 +100,24 @@ const HomePage = () => {
       </Box>
 
       {/* Stats Section */}
-      <Container 
-        maxWidth="xl" 
-        sx={{ 
-          mt: { xs: -3, sm: -4, md: -6 }, 
-          position: 'relative', 
-          zIndex: 1, 
-          px: { xs: 2, sm: 4, md: 6, lg: 8 } 
-        }}
-      >
-        <Paper 
-          elevation={24} 
-          sx={{ 
-            borderRadius: { xs: 3, md: 4 },
-            py: { xs: 2, sm: 3, md: 4 },
-            mx: 'auto',
-            maxWidth: '1400px'
-          }}
-        >
+      <Container maxWidth="lg" sx={{ mt: { xs: -3, md: -5 }, position: 'relative', zIndex: 1, px: { xs: 2, sm: 3, md: 4 } }}>
+        <Paper elevation={24} sx={{ borderRadius: 4, py: { xs: 2, md: 3 } }}>
           <Grid container>
             <Grid item xs={12} md={4} sx={{
-              p: { xs: 2, sm: 3, md: 4 },
+              p: { xs: 2, md: 3 },
               textAlign: 'center',
               borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
               borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
             }}>
-              <Typography 
-                variant="h3" 
-                component="div" 
-                color="primary" 
-                fontWeight="bold" 
-                sx={{ 
-                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                  mb: { xs: 1, md: 2 }
-                }}
-              >
+              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
                 10K+
               </Typography>
-              <Typography 
-                variant="subtitle1" 
-                sx={{ 
-                  fontSize: { xs: '0.875rem', sm: '1rem', md: '1.125rem' },
-                  color: 'text.secondary'
-                }}
-              >
+              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
                 Verified Business Leads
               </Typography>
             </Grid>
             <Grid item xs={12} md={4} sx={{
-              p: { xs: 2, sm: 3, md: 4 },
+              p: 3,
               textAlign: 'center',
               borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
               borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
@@ -167,7 +125,7 @@ const HomePage = () => {
               <Typography variant="h3" component="div" color="primary" fontWeight="bold">50+</Typography>
               <Typography variant="subtitle1">Business Categories</Typography>
             </Grid>
-            <Grid item xs={12} md={4} sx={{ p: { xs: 2, sm: 3, md: 4 }, textAlign: 'center' }}>
+            <Grid item xs={12} md={4} sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h3" component="div" color="primary" fontWeight="bold">100%</Typography>
               <Typography variant="subtitle1">Verified Information</Typography>
             </Grid>
@@ -176,22 +134,13 @@ const HomePage = () => {
       </Container>
 
       {/* Search Form Section */}
-      <Box 
-        id="search-section" 
-        sx={{ 
-          py: { xs: 6, sm: 8, md: 10 }, 
-          mt: { xs: 3, sm: 4, md: 6 }
-        }}
-      >
+      <Box id="search-section" sx={{ py: 8, mt: 4 }}>
         <SearchForm />
       </Box>
 
       {/* How It Works Section */}
-      <Box sx={{ 
-        py: { xs: 6, sm: 8, md: 10 }, 
-        bgcolor: 'grey.50' 
-      }}>
-        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 4, md: 6, lg: 8 } }}>
+      <Box sx={{ py: { xs: 6, md: 8 }, bgcolor: 'grey.50' }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Typography
             variant="h3"
             component="h2"
@@ -354,10 +303,7 @@ const HomePage = () => {
       </Box>
 
       {/* Features Section */}
-      <Container maxWidth="xl" sx={{ 
-        py: { xs: 6, sm: 8, md: 10 }, 
-        px: { xs: 2, sm: 4, md: 6, lg: 8 } 
-      }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 }, px: { xs: 2, sm: 3, md: 4 } }}>
         <Typography
           variant="h3"
           component="h2"
@@ -600,21 +546,23 @@ const HomePage = () => {
       </Container>
 
       {/* Testimonials Section */}
-      <Box sx={{
-        py: { xs: 8, sm: 10, md: 12 },
-        position: 'relative',
-        px: { xs: 2, sm: 4, md: 6, lg: 8 },
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage: 'linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%)',
-          zIndex: -1,
-        }
-      }}>
+      <Box
+        sx={{
+          py: { xs: 8, md: 10 },
+          position: 'relative',
+          px: { xs: 2, sm: 3, md: 4 },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: 'linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%)',
+            zIndex: -1,
+          }
+        }}
+      >
         {/* Decorative elements */}
         <Box
           sx={{
@@ -820,11 +768,7 @@ const HomePage = () => {
       </Box>
 
       {/* Call to Action */}
-      <Box sx={{ 
-        py: { xs: 8, sm: 10, md: 12 }, 
-        textAlign: 'center', 
-        px: { xs: 2, sm: 4, md: 6, lg: 8 } 
-      }}>
+      <Box sx={{ py: { xs: 8, md: 10 }, textAlign: 'center', px: { xs: 2, sm: 3, md: 4 } }}>
         <Container maxWidth="md">
           <Typography
             variant="h3"
