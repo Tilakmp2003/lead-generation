@@ -147,8 +147,6 @@ const LeadCard = ({ lead }) => {
         transition: 'all 0.3s ease',
         mx: 'auto',
         width: '100%',
-        // Set fixed height for consistent card sizing
-        minHeight: { xs: 'auto', sm: '450px', md: '480px' },
         // Ensure cards have consistent width
         maxWidth: '100%',
         '&:hover': {
