@@ -915,9 +915,9 @@ const ResultsPage = () => {
                 {leads.map((lead, index) => (
                   <Grid
                     item
-                    xs={12}
-                    sm={6}
-                    lg={4}
+                    xs={12}      /* 1 card per row on mobile */
+                    sm={6}       /* 2 cards per row on tablets */
+                    md={4}       /* 3 cards per row on laptops/desktops */
                     key={lead.id || index}
                     sx={{
                       display: 'flex',
