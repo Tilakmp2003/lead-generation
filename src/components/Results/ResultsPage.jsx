@@ -515,18 +515,18 @@ const ResultsPage = () => {
       sx={{ 
         minHeight: '100vh',
         bgcolor: 'background.default',
-        pt: { xs: 2, md: 4 },
-        pb: { xs: 6, md: 8 }
+        pt: { xs: 3, sm: 4, md: 5, lg: 6 },
+        pb: { xs: 6, sm: 8, md: 10 }
       }}
     >
       <Container 
         maxWidth="xl" 
         sx={{
-          px: { xs: 2, sm: 3, md: 4 }
+          px: { xs: 2, sm: 4, md: 6, lg: 8 }
         }}
       >
         <Box sx={{ 
-          maxWidth: 1400,
+          maxWidth: 1600,
           mx: 'auto'
         }}>
           {/* Back Button */}
@@ -534,47 +534,40 @@ const ResultsPage = () => {
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/')}
             sx={{
-              mb: { xs: 2, md: 3 },
-              borderRadius: 2,
-              px: { xs: 1.5, md: 2 },
-              py: 0.8,
-              fontSize: { xs: '0.75rem', md: '0.9rem' },
-              bgcolor: 'rgba(46, 125, 50, 0.05)',
-              color: 'primary.main',
-              border: '1px solid',
-              borderColor: 'primary.main',
+              mb: { xs: 2, sm: 3, md: 4 },
+              borderRadius: { xs: 1.5, md: 2 },
+              px: { xs: 2, md: 3 },
+              py: { xs: 1, md: 1.5 },
+              fontSize: { xs: '0.875rem', sm: '0.925rem', md: '1rem' },
+              textTransform: 'none',
+              color: 'text.primary',
               '&:hover': {
-                bgcolor: 'rgba(46, 125, 50, 0.1)',
+                bgcolor: 'rgba(0, 0, 0, 0.05)'
               }
             }}
           >
             Back to Search
           </Button>
 
-          {/* Header Section */}
-          <Box sx={{
-            mb: { xs: 3, md: 4 },
-            textAlign: { xs: 'center', md: 'left' }
-          }}>
+          <Box sx={{ mb: { xs: 3, sm: 4, md: 5 } }}>
             <Typography
               variant="h4"
               component="h1"
+              gutterBottom
               sx={{
                 fontWeight: 700,
-                fontSize: { xs: '1.5rem', sm: '1.8rem', md: '2.2rem' },
-                mb: { xs: 1, md: 2 },
-                color: 'text.primary'
+                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.25rem', lg: '2.5rem' },
+                color: 'text.primary',
+                mb: { xs: 1, sm: 2 }
               }}
             >
               Search Results
             </Typography>
-
             <Typography
               variant="body1"
               sx={{
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                color: 'text.secondary',
-                mb: { xs: 2, md: 3 }
+                fontSize: { xs: '0.875rem', sm: '1rem', md: '1.125rem' },
+                color: 'text.secondary'
               }}
             >
               Found <strong>{leads.length}</strong> leads for <strong>{sector}</strong> in <strong>{locationFilter}</strong>
@@ -586,8 +579,8 @@ const ResultsPage = () => {
             elevation={0}
             sx={{
               p: { xs: 2, sm: 3, md: 4 },
-              mb: { xs: 3, md: 4 },
-              borderRadius: 3,
+              mb: { xs: 3, sm: 4, md: 5 },
+              borderRadius: { xs: 2, md: 3 },
               bgcolor: 'background.paper',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid',
@@ -597,9 +590,9 @@ const ResultsPage = () => {
             <Typography
               variant="h6"
               sx={{
-                mb: { xs: 2, md: 3 },
+                mb: { xs: 2, sm: 3, md: 4 },
                 fontWeight: 600,
-                fontSize: { xs: '1rem', md: '1.25rem' },
+                fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' },
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1
@@ -611,323 +604,235 @@ const ResultsPage = () => {
 
             <Grid 
               container 
-              spacing={3}
+              spacing={{ xs: 2, sm: 3, md: 4 }}
               sx={{ 
-                maxWidth: 1200,
+                maxWidth: 1400,
                 mx: 'auto'
               }}
             >
               <Grid item xs={12} sm={6} md={3}>
-                <FormControl fullWidth size="small" sx={{ mb: 1 }}>
-                  <InputLabel id="sector-filter-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Business Sector</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
+                    Business Sector
+                  </InputLabel>
                   <Select
-                    labelId="sector-filter-label"
-                    id="sector-filter"
                     value={sector}
                     label="Business Sector"
                     onChange={handleSectorChange}
                     sx={{
-                      borderRadius: 2,
-                      fontSize: { xs: '0.75rem', md: '0.875rem' },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(0, 0, 0, 0.12)'
+                      borderRadius: { xs: 1.5, md: 2 },
+                      '& .MuiSelect-select': {
+                        fontSize: { xs: '0.875rem', md: '1rem' }
                       }
                     }}
                   >
-                    {businessSectors.map((s) => (
-                      <MenuItem key={s} value={s} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>{s}</MenuItem>
+                    {businessSectors.map((sector) => (
+                      <MenuItem 
+                        key={sector} 
+                        value={sector}
+                        sx={{ 
+                          fontSize: { xs: '0.875rem', md: '1rem' },
+                          py: { xs: 1, md: 1.5 }
+                        }}
+                      >
+                        {sector}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <FormControl fullWidth size="small" sx={{ mb: 1 }}>
-                  <InputLabel id="location-filter-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Location</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
+                    Location
+                  </InputLabel>
                   <Select
-                    labelId="location-filter-label"
-                    id="location-filter"
-                    value={locations.includes(locationFilter) ? locationFilter : 'Others'}
+                    value={locationFilter}
                     label="Location"
                     onChange={handleLocationChange}
                     sx={{
-                      borderRadius: 2,
-                      fontSize: { xs: '0.75rem', md: '0.875rem' },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(0, 0, 0, 0.12)'
+                      borderRadius: { xs: 1.5, md: 2 },
+                      '& .MuiSelect-select': {
+                        fontSize: { xs: '0.875rem', md: '1rem' }
                       }
                     }}
                   >
                     {locations.map((loc) => (
-                      <MenuItem key={loc} value={loc} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>{loc}</MenuItem>
-                    ))}
-                  </Select>
-
-                  {/* Show the current custom location if it's not in the predefined list */}
-                  {!locations.includes(locationFilter) && locationFilter !== 'All' && (
-                    <Typography variant="body2" color="primary" sx={{
-                      mt: 1,
-                      fontStyle: 'italic',
-                      fontSize: { xs: '0.7rem', md: '0.75rem' }
-                    }}>
-                      Current: {locationFilter}
-                    </Typography>
-                  )}
-
-                  {/* Custom location input field - only shown when "Others" is selected */}
-                  {locationFilter === 'Others' ? (
-                    <Box sx={{
-                      mt: 1.5,
-                      display: 'flex',
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      gap: { xs: 1, sm: 1 }
-                    }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label="Enter Custom Location"
-                        variant="outlined"
-                        value={customLocation}
-                        onChange={handleCustomLocationChange}
-                        placeholder="e.g., Coimbatore, Trichy"
-                        // Using direct props instead of deprecated InputProps
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <LocationOnIcon color="primary" fontSize="small" sx={{ fontSize: { xs: '0.9rem', md: '1.25rem' } }} />
-                          </InputAdornment>
-                        }
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2,
-                          },
-                          '& .MuiInputLabel-root': {
-                            fontSize: { xs: '0.75rem', md: '0.875rem' }
-                          },
-                          '& .MuiOutlinedInput-input': {
-                            fontSize: { xs: '0.75rem', md: '0.875rem' }
-                          }
-                        }}
-                      />
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCustomLocationSubmit}
-                        disabled={!customLocation.trim()}
-                        sx={{
-                          borderRadius: 2,
-                          minWidth: { xs: '100%', sm: '80px' },
-                          height: { xs: '32px', sm: 'auto' },
-                          fontSize: { xs: '0.75rem', md: '0.875rem' },
-                          py: { xs: 0.5, md: 1 }
+                      <MenuItem 
+                        key={loc} 
+                        value={loc}
+                        sx={{ 
+                          fontSize: { xs: '0.875rem', md: '1rem' },
+                          py: { xs: 1, md: 1.5 }
                         }}
                       >
-                        Apply
-                      </Button>
-                    </Box>
-                  ) : null}
+                        {loc}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </FormControl>
+
+                {locationFilter === 'Others' && (
+                  <Box sx={{
+                    mt: 1.5,
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: { xs: 1, sm: 1.5 }
+                  }}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Enter Custom Location"
+                      variant="outlined"
+                      value={customLocation}
+                      onChange={handleCustomLocationChange}
+                      placeholder="e.g., Coimbatore, Trichy"
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: { xs: 1.5, md: 2 },
+                        },
+                        '& .MuiInputLabel-root': {
+                          fontSize: { xs: '0.875rem', md: '1rem' }
+                        },
+                        '& .MuiInputBase-input': {
+                          fontSize: { xs: '0.875rem', md: '1rem' }
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCustomLocationSubmit}
+                      disabled={!customLocation.trim()}
+                      sx={{
+                        borderRadius: { xs: 1.5, md: 2 },
+                        minWidth: { xs: '100%', sm: '120px' },
+                        height: { xs: '36px', sm: '40px' },
+                        fontSize: { xs: '0.875rem', md: '1rem' }
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  </Box>
+                )}
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <FormControl fullWidth size="small" sx={{ mb: 1 }}>
-                  <InputLabel id="sort-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Sort By</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
+                    Sort By
+                  </InputLabel>
                   <Select
-                    labelId="sort-label"
-                    id="sort-select"
                     value={sortBy}
                     label="Sort By"
                     onChange={handleSortChange}
-                    startAdornment={<SortIcon sx={{ mr: 1, color: 'primary.main', fontSize: { xs: '0.9rem', md: '1.25rem' } }} />}
                     sx={{
-                      borderRadius: 2,
-                      fontSize: { xs: '0.75rem', md: '0.875rem' },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(0, 0, 0, 0.12)'
+                      borderRadius: { xs: 1.5, md: 2 },
+                      '& .MuiSelect-select': {
+                        fontSize: { xs: '0.875rem', md: '1rem' }
                       }
                     }}
                   >
-                    <MenuItem value="businessName" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Business Name</MenuItem>
-                    <MenuItem value="businessType" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Business Type</MenuItem>
-                    <MenuItem value="location" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Location</MenuItem>
-                    <MenuItem value="verificationScore" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Verification Score</MenuItem>
+                    <MenuItem value="rating" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Rating (High to Low)</MenuItem>
+                    <MenuItem value="reviews" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Reviews (Most to Least)</MenuItem>
+                    <MenuItem value="name" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Business Name (A-Z)</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <FormControl fullWidth size="small" sx={{ mb: 1 }}>
-                  <InputLabel id="verification-label" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Min. Verification Score</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
+                    Verification Score
+                  </InputLabel>
                   <Select
-                    labelId="verification-label"
-                    id="verification-select"
                     value={minVerificationScore}
-                    label="Min. Verification Score"
+                    label="Verification Score"
                     onChange={handleVerificationScoreChange}
-                    startAdornment={<VerifiedUserIcon sx={{ mr: 1, color: 'primary.main', fontSize: { xs: '0.9rem', md: '1.25rem' } }} />}
                     sx={{
-                      borderRadius: 2,
-                      fontSize: { xs: '0.75rem', md: '0.875rem' },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(0, 0, 0, 0.12)'
+                      borderRadius: { xs: 1.5, md: 2 },
+                      '& .MuiSelect-select': {
+                        fontSize: { xs: '0.875rem', md: '1rem' }
                       }
                     }}
                   >
-                    <MenuItem value={0} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>All Leads (0%+)</MenuItem>
-                    <MenuItem value={25} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Basic Verification (25%+)</MenuItem>
-                    <MenuItem value={50} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Standard Verification (50%+)</MenuItem>
-                    <MenuItem value={75} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>High Verification (75%+)</MenuItem>
-                    <MenuItem value={90} sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>Premium Verification (90%+)</MenuItem>
+                    <MenuItem value={0} sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>All Leads</MenuItem>
+                    <MenuItem value={50} sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Basic Verification (50%+)</MenuItem>
+                    <MenuItem value={75} sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>High Verification (75%+)</MenuItem>
+                    <MenuItem value={90} sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>Premium Verification (90%+)</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
             </Grid>
-          </Paper>
 
-          {/* Results Section */}
-          {!isAuthenticated ? (
+            {/* Export Actions */}
             <Box sx={{ 
-              textAlign: 'center',
-              my: { xs: 4, md: 6 },
-              p: { xs: 3, md: 4 },
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+              mt: { xs: 3, sm: 4 },
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: { xs: 2, sm: 3 },
+              justifyContent: 'center'
             }}>
-              <Alert 
-                severity="info" 
-                sx={{ 
-                  mb: 3,
-                  maxWidth: 500,
-                  mx: 'auto'
-                }}
-              >
-                You need to be logged in to search for leads
-              </Alert>
               <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
-                startIcon={<LoginIcon />}
-                onClick={() => navigate('/login')}
+                onClick={handleExportCSV}
+                startIcon={<FileDownloadIcon />}
                 sx={{
-                  py: 1.5,
-                  px: 4,
-                  borderRadius: 2,
-                  textTransform: 'none',
-                  fontSize: '1rem'
+                  borderRadius: { xs: 1.5, md: 2 },
+                  py: { xs: 1, md: 1.5 },
+                  px: { xs: 2, md: 3 },
+                  fontSize: { xs: '0.875rem', md: '1rem' },
+                  textTransform: 'none'
                 }}
               >
-                Log in to continue
+                Export to CSV
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleExportGoogleSheets}
+                startIcon={<GoogleIcon />}
+                sx={{
+                  borderRadius: { xs: 1.5, md: 2 },
+                  py: { xs: 1, md: 1.5 },
+                  px: { xs: 2, md: 3 },
+                  fontSize: { xs: '0.875rem', md: '1rem' },
+                  textTransform: 'none'
+                }}
+              >
+                Export to Google Sheets
               </Button>
             </Box>
-          ) : loading ? (
-            <Box sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              py: { xs: 6, md: 8 },
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-            }}>
-              <CircularProgress size={32} thickness={4} sx={{ mr: 2 }} />
-              <Typography variant="body1" color="text.secondary">
-                Loading leads...
-              </Typography>
-            </Box>
-          ) : error ? (
-            <Alert
-              severity="error"
-              sx={{
-                mt: 4,
-                borderRadius: 2,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-              }}
-            >
-              {error}
-            </Alert>
-          ) : leads.length === 0 ? (
-            <Alert
-              severity="info"
-              sx={{
-                mt: 4,
-                borderRadius: 2,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-              }}
-            >
-              No leads found matching your search criteria. Please try different filters.
-            </Alert>
-          ) : (
-            <>
-              {/* Export Options */}
-              <Box sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 2,
-                mb: 3
-              }}>
-                <Button
-                  variant="contained"
-                  startIcon={<GoogleIcon />}
-                  onClick={() => {
-                    setExportOption('google');
-                    handleExportOptionChange('google');
-                  }}
-                  disabled={loading || leads.length === 0}
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    bgcolor: '#4285F4',
-                    '&:hover': {
-                      bgcolor: '#3367D6'
-                    }
-                  }}
-                >
-                  Export to Sheets
-                </Button>
-                <Button
-                  variant="outlined"
-                  startIcon={<FileDownloadIcon />}
-                  onClick={() => {
-                    setExportOption('csv');
-                    handleExportOptionChange('csv');
-                  }}
-                  disabled={loading || leads.length === 0}
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: 'none'
-                  }}
-                >
-                  Export to CSV
-                </Button>
-              </Box>
+          </Paper>
 
-              {/* Results Grid */}
-              <Grid
-                container
-                spacing={{ xs: 2, sm: 3, md: 4 }}
+          {/* Results Grid */}
+          <Grid
+            container
+            spacing={{ xs: 2, sm: 3, md: 4 }}
+            sx={{
+              maxWidth: 1600,
+              mx: 'auto'
+            }}
+          >
+            {leads.map((lead, index) => (
+              <Grid 
+                item 
+                xs={12} 
+                sm={6} 
+                lg={4} 
+                xl={3}
+                key={lead.id || index}
                 sx={{
-                  maxWidth: 1400,
-                  mx: 'auto'
+                  display: 'flex',
+                  justifyContent: 'center'
                 }}
               >
-                {leads.map((lead, index) => (
-                  <Grid 
-                    item 
-                    xs={12} 
-                    sm={6} 
-                    lg={4} 
-                    key={lead.id || index}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <LeadCard lead={lead} />
-                  </Grid>
-                ))}
+                <LeadCard lead={lead} />
               </Grid>
-            </>
-          )}
+            ))}
+          </Grid>
         </Box>
       </Container>
 
@@ -939,61 +844,62 @@ const ResultsPage = () => {
         aria-describedby="google-sheets-dialog-description"
         PaperProps={{
           sx: {
-            borderRadius: 3,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-            maxWidth: 500
+            borderRadius: { xs: 2, md: 3 },
+            p: { xs: 2, sm: 3 },
+            width: '100%',
+            maxWidth: { xs: '90%', sm: 500 }
           }
         }}
       >
-        <DialogTitle id="google-sheets-dialog-title" sx={{ pb: 1 }}>
+        <DialogTitle 
+          id="google-sheets-dialog-title" 
+          sx={{ 
+            pb: 1,
+            fontSize: { xs: '1.25rem', md: '1.5rem' }
+          }}
+        >
           {googleSheetsError ? 'Google Sheets Export Error' : 'Export to Google Sheets'}
         </DialogTitle>
         <DialogContent>
-          {googleSheetsError ? (
-            <DialogContentText id="google-sheets-dialog-description" sx={{ color: 'error.main' }}>
-              {googleSheetsError}
-              <br /><br />
-              Please try again or use CSV export instead.
-            </DialogContentText>
-          ) : (
-            <DialogContentText id="google-sheets-dialog-description">
-              You need to sign in with your Google account to export leads to Google Sheets.
-              <br /><br />
-              This will allow the app to create a new spreadsheet in your Google Drive.
-            </DialogContentText>
-          )}
+          <DialogContentText 
+            id="google-sheets-dialog-description" 
+            sx={{ 
+              color: googleSheetsError ? 'error.main' : 'text.secondary',
+              fontSize: { xs: '0.875rem', md: '1rem' }
+            }}
+          >
+            {googleSheetsError ? (
+              <>
+                {googleSheetsError}
+                <br /><br />
+                Please try again or use CSV export instead.
+              </>
+            ) : (
+              'Your leads will be exported to a new Google Sheets document. You can then share and collaborate on this document with your team.'
+            )}
+          </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button
+        <DialogActions sx={{ pt: 2 }}>
+          <Button 
             onClick={handleGoogleDialogClose}
-            variant="outlined"
-            sx={{ borderRadius: 2 }}
+            sx={{ 
+              fontSize: { xs: '0.875rem', md: '1rem' },
+              textTransform: 'none'
+            }}
           >
             Cancel
           </Button>
           {!googleSheetsError && (
-            <Button
-              onClick={async () => {
-                try {
-                  await signIn();
-                  handleGoogleDialogClose();
-                  handleExportToSheets();
-                } catch (error) {
-                  console.error('Google Sign In Error:', error);
-                  setGoogleSheetsError('Failed to sign in with Google. Please try again.');
-                }
-              }}
-              variant="contained"
-              startIcon={<GoogleIcon />}
-              sx={{
-                borderRadius: 2,
-                bgcolor: '#4285F4',
-                '&:hover': {
-                  bgcolor: '#3367D6',
-                }
+            <Button 
+              onClick={handleGoogleExportConfirm}
+              variant="contained" 
+              color="primary"
+              sx={{ 
+                fontSize: { xs: '0.875rem', md: '1rem' },
+                textTransform: 'none'
               }}
             >
-              Sign in with Google
+              Export
             </Button>
           )}
         </DialogActions>
@@ -1010,8 +916,8 @@ const ResultsPage = () => {
           severity={snackbarSeverity}
           sx={{
             width: '100%',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            borderRadius: 2
+            fontSize: { xs: '0.875rem', md: '1rem' },
+            borderRadius: { xs: 1.5, md: 2 }
           }}
         >
           {snackbarMessage}
