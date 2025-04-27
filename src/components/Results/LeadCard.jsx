@@ -39,7 +39,6 @@ const LeadCard = ({ lead }) => {
 
   // Add error handling for missing lead data
   if (!lead) {
-    console.error('Lead data is missing');
     return (
       <Card sx={{ height: '100%', p: 3, borderRadius: 3, boxShadow: '0 6px 16px rgba(0,0,0,0.08)' }}>
         <Typography variant="body1" color="error">Error: Invalid lead data</Typography>
@@ -49,12 +48,8 @@ const LeadCard = ({ lead }) => {
 
   // Ensure contactDetails exists
   if (!lead.contactDetails) {
-    console.error('Lead contactDetails is missing:', lead);
     lead.contactDetails = {}; // Create empty object to prevent errors
   }
-
-  // Log lead data for debugging
-  console.log('Processing lead in LeadCard:', lead);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);

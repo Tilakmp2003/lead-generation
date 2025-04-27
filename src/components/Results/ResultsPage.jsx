@@ -74,12 +74,9 @@ const ResultsPage = () => {
         return;
       }
 
-      console.log('Fetching leads with:', { sector, locationFilter });
-
       // Set a timeout to show fallback data if API takes too long
       const timeoutId = setTimeout(() => {
         if (loading) {
-          console.log('API request taking too long, showing fallback data');
           showFallbackData();
         }
       }, 5000); // 5 seconds timeout
@@ -87,23 +84,14 @@ const ResultsPage = () => {
       try {
         // Try direct fetch first for more reliable results
         // Use the API service to fetch leads
-        console.log('Calling API service with:', { sector, locationFilter });
         const fetchedLeads = await apiService.searchLeads(sector, locationFilter, { maxResults: 100 });
         // Clear the timeout since we got a response
         clearTimeout(timeoutId);
 
-        console.log('Fetched leads:', fetchedLeads);
-        console.log('Fetched leads type:', typeof fetchedLeads);
-        console.log('Is array?', Array.isArray(fetchedLeads));
-
         // CRITICAL: Force leads to be an array
         const leadsArray = Array.isArray(fetchedLeads) ? fetchedLeads : [];
 
-        console.log('Leads array:', leadsArray);
-        console.log('Leads array length:', leadsArray.length);
-
         if (leadsArray.length === 0) {
-          console.log('No leads returned from API');
           setLeads([]);
           setLoading(false);
           return;
@@ -114,13 +102,8 @@ const ResultsPage = () => {
           lead && (lead.verificationScore >= minVerificationScore)
         );
 
-        console.log(`Filtered ${leadsArray.length} leads to ${filteredLeads.length} based on verification score ${minVerificationScore}`);
-        console.log('Filtered leads:', filteredLeads);
-
         // Sort leads
         const sortedLeads = sortLeads(filteredLeads, sortBy);
-        console.log('Sorted leads:', sortedLeads);
-
         // Update state with the new leads
         setLeads(sortedLeads);
         setLoading(false);
@@ -128,14 +111,10 @@ const ResultsPage = () => {
       } catch (apiError) {
         // Clear the timeout since we got an error response
         clearTimeout(timeoutId);
-        console.error('Error fetching leads from API, falling back to mock data:', apiError);
         // Continue to fallback mechanism below
+        showFallbackData();
       }
-
-      // Call the showFallbackData function
-      showFallbackData();
     } catch (err) {
-      console.error('Error in fetchLeads:', err);
       setError('An error occurred while fetching leads');
       showFallbackData();
     } finally {
@@ -146,35 +125,23 @@ const ResultsPage = () => {
 
   // Function to show fallback data when API is slow or fails
   const showFallbackData = () => {
-    console.log('Using fallback mock data');
+    let fallbackLeads = [...mockLeads];
 
     // Filter mock leads based on sector and location
-    let fallbackLeads = [...mockLeads];
-    console.log('Total mock leads available:', fallbackLeads.length);
-
     if (sector && sector !== 'All') {
       fallbackLeads = fallbackLeads.filter(lead => lead.businessType === sector);
-      console.log(`After filtering by sector "${sector}":`, fallbackLeads.length);
     }
 
     if (locationFilter && locationFilter !== 'All') {
       const location = locationFilter.toLowerCase();
-      console.log(`Filtering by location "${location}"`);
-
       fallbackLeads = fallbackLeads.filter(lead => {
         // Make location filtering more flexible
         const address = (lead.address || '').toLowerCase();
-        const includes = address.includes(location);
-        console.log(`Lead address: "${address}", includes "${location}": ${includes}`);
-        return includes;
+        return address.includes(location);
       });
-
-      console.log(`After filtering by location "${locationFilter}":`, fallbackLeads.length);
 
       // If no leads found with exact match, try more flexible matching
       if (fallbackLeads.length === 0) {
-        console.log('No leads found with exact location match, trying flexible matching');
-
         // Try to match just the first part of the location (e.g., "Kochi" instead of "Kochi, Kerala")
         const shortLocation = location.split(',')[0].trim();
 
@@ -183,12 +150,8 @@ const ResultsPage = () => {
           return address.includes(shortLocation);
         });
 
-        console.log(`After flexible location matching with "${shortLocation}":`, fallbackLeads.length);
-
         // If still no leads, add some mock leads for this location
         if (fallbackLeads.length === 0) {
-          console.log(`Creating mock leads for ${locationFilter}`);
-
           // Create 5 mock leads for this location
           for (let i = 0; i < 5; i++) {
             fallbackLeads.push({
@@ -209,8 +172,6 @@ const ResultsPage = () => {
               verificationScore: Math.floor(Math.random() * 100)
             });
           }
-
-          console.log(`Created ${fallbackLeads.length} mock leads for ${locationFilter}`);
         }
       }
     }
@@ -239,12 +200,10 @@ const ResultsPage = () => {
       lead.verificationScore >= minVerificationScore
     );
 
-    console.log(`Using ${fallbackLeads.length} mock leads, filtered to ${filteredLeads.length} based on verification score ${minVerificationScore}`);
-
     // Sort leads
     const sortedLeads = sortLeads(filteredLeads, sortBy);
 
-    console.log('Setting leads state with:', sortedLeads);
+    // Update state with the sorted fallback leads
     setLeads(sortedLeads);
   };
 
@@ -353,9 +312,6 @@ const ResultsPage = () => {
 
       if (exportOption === 'csv' || !isSignedIn()) {
         // Export to CSV file
-        console.log('Creating CSV file for download.');
-
-        // Create CSV content
         const headers = [
           'Business Name',
           'Business Type',
@@ -386,7 +342,6 @@ const ResultsPage = () => {
           ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
         ].join('\n');
 
-        // Create a blob and download link
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -397,7 +352,6 @@ const ResultsPage = () => {
         link.click();
         document.body.removeChild(link);
 
-        // Show success message
         setSnackbarMessage('Leads exported to CSV file successfully!');
         setSnackbarSeverity('success');
         setOpenSnackbar(true);
@@ -413,40 +367,28 @@ const ResultsPage = () => {
             'Local CSV Export'
           );
         } catch (saveError) {
-          console.error('Error saving export history:', saveError);
           // Optionally show a warning if saving history fails but download succeeded
           setSnackbarMessage('Leads exported to CSV, but failed to save history.');
           setSnackbarSeverity('warning');
-          setOpenSnackbar(true); // Re-open snackbar with warning
+          setOpenSnackbar(true);
         }
       } else {
         // Export to Google Sheets
         try {
-          console.log('Exporting to Google Sheets...');
-
-          // Check if user is signed in to Google
           if (!isSignedIn()) {
-            console.log('User not signed in to Google, requesting sign in...');
             await signIn();
           }
 
-          // Create a new Google Sheet
           const sheetTitle = `Lead Generation - ${sector} in ${locationFilter} - ${new Date().toLocaleDateString()}`;
-          console.log('Creating new Google Sheet:', sheetTitle);
           const sheet = await createSheet(sheetTitle);
 
           if (!sheet || !sheet.spreadsheetId) {
             throw new Error('Failed to create Google Sheet');
           }
 
-          console.log('Sheet created with ID:', sheet.spreadsheetId);
-
-          // Export leads to the sheet
           await exportLeadsToSheet(leads, sheet.spreadsheetId);
 
-          // Show success message with link to the sheet
           const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`;
-          console.log('Leads exported successfully to:', sheetUrl);
 
           // Save the export to the user's history
           const userId = 'demo-user'; // Replace with actual user ID if available
@@ -459,7 +401,7 @@ const ResultsPage = () => {
               sheetUrl
             );
           } catch (saveError) {
-            console.error('Error saving export history:', saveError);
+            // Error saving export history can be ignored as it's not critical
           }
 
           // Open the sheet in a new tab
@@ -469,7 +411,6 @@ const ResultsPage = () => {
           setSnackbarSeverity('success');
           setOpenSnackbar(true);
         } catch (googleError) {
-          console.error('Error exporting to Google Sheets:', googleError);
           setGoogleSheetsError(googleError.message || 'Failed to export to Google Sheets');
           setOpenGoogleDialog(true);
 
@@ -479,8 +420,6 @@ const ResultsPage = () => {
         }
       }
     } catch (error) {
-      // Catch errors specifically related to export
-      console.error('Error exporting leads:', error);
       setSnackbarMessage('Failed to export leads. Please try again.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
