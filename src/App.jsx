@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/styles/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 import { Box, Snackbar, Alert } from '@mui/material';
 
 // Components
@@ -135,7 +135,7 @@ function App() {
         await initGoogleSheetsAPI();
       } catch (error) {
         console.error('Failed to initialize Google API:', error);
-        const isMissingCredentials = !import.meta.env.VITE_GOOGLE_SHEETS_CLIENT_ID || 
+        const isMissingCredentials = !import.meta.env.VITE_GOOGLE_SHEETS_CLIENT_ID ||
                                    !import.meta.env.VITE_GOOGLE_SHEETS_API_KEY;
         setSnackbarMessage(`Google Sheets integration is not available: ${
           isMissingCredentials ? 'missing credentials' : 'origin restriction'
