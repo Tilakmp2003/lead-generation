@@ -22,7 +22,7 @@ import TermsOfService from './components/Legal/TermsOfService';
 import { AuthProvider } from './contexts/AuthContext';
 
 // Services
-import { initGoogleSheetsAPI } from './services/googleSheetsService';
+// initGoogleSheetsAPI is already imported at the top of the file
 
 // Theme configuration
 const theme = createTheme({
