@@ -58,7 +58,7 @@ const searchLeads = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         count: leads.length,
-        data: leads
+        leads: leads
       });
     } catch (searchError) {
       console.error(`Error searching for leads: ${searchError.message}`);
@@ -69,7 +69,7 @@ const searchLeads = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         count: 0,
-        data: [],
+        leads: [],
         message: 'Search completed with no results'
       });
     }
@@ -81,7 +81,7 @@ const searchLeads = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       count: 0,
-      data: [],
+      leads: [],
       message: 'An error occurred during search'
     });
   }

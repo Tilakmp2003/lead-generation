@@ -1,4 +1,4 @@
-import supabase from './supabaseClient';
+import { supabase } from './supabase';
 
 // Backend API URL - Use environment variable or fallback to deployed URL
 const API_URL = import.meta.env.VITE_API_URL || 'https://lead-gen-fsei.onrender.com';
@@ -35,7 +35,8 @@ const searchLeads = async (sector, location, options = {}) => {
     }
 
     const data = await response.json();
-    return data.leads || [];
+    // Handle both response formats (data.leads or data.data)
+    return data.leads || data.data || [];
   } catch (error) {
     console.error('API Error:', error);
     throw new Error('Error searching leads: ' + error.message);

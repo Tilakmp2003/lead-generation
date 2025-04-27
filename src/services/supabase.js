@@ -22,17 +22,60 @@ if (!supabaseAnonKey) {
 // Initialize Supabase client only if variables are present
 let supabaseInstance = null;
 if (supabaseUrl && supabaseAnonKey) {
-  supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
-      storageKey: 'lead-generation-auth',
-      storage: localStorage
+  try {
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storageKey: 'lead-generation-auth',
+        storage: localStorage
+      }
+    });
+    console.log('Supabase client initialized successfully');
+  } catch (error) {
+    console.error("Error initializing Supabase client:", error);
+    // Create a fallback instance with default values for development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Creating fallback Supabase client for development');
+      supabaseInstance = {
+        auth: {
+          getSession: async () => ({ data: { session: null }, error: null }),
+          getUser: async () => ({ data: { user: null }, error: null }),
+          signOut: async () => ({ error: null })
+        },
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              order: () => ({ data: [], error: null })
+            })
+          }),
+          insert: () => ({ error: null })
+        })
+      };
     }
-  });
+  }
 } else {
   console.error("Supabase client could not be initialized due to missing environment variables.");
+  // Create a mock instance for development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Creating mock Supabase client for development');
+    supabaseInstance = {
+      auth: {
+        getSession: async () => ({ data: { session: null }, error: null }),
+        getUser: async () => ({ data: { user: null }, error: null }),
+        signOut: async () => ({ error: null })
+      },
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            order: () => ({ data: [], error: null })
+          })
+        }),
+        insert: () => ({ error: null })
+      })
+    };
+  }
 }
 
 export const supabase = supabaseInstance;
