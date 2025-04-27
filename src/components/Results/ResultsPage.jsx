@@ -912,7 +912,8 @@ const ResultsPage = () => {
                 sx={{
                   width: '100%',
                   maxWidth: '100%',
-                  mx: 'auto'
+                  mx: 'auto',
+                  justifyContent: 'center' // Center grid items horizontally
                 }}
               >
                 {leads.map((lead, index) => (
