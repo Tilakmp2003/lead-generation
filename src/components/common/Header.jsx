@@ -148,7 +148,9 @@ const Header = () => {
               <Box sx={{ 
                 display: { xs: 'none', md: 'flex' }, 
                 gap: 1,
-                alignItems: 'center'
+                alignItems: 'center',
+                flexGrow: 1, // Allow this box to grow and fill space
+                justifyContent: 'center' // Center the items within this box
               }}>
                 {menuItems.map((item) => (
                   <Button

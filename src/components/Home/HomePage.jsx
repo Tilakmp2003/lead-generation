@@ -100,7 +100,13 @@ const HomePage = () => {
       </Box>
 
       {/* Stats Section */}
-      <Container maxWidth="lg" sx={{ mt: { xs: -3, md: -5 }, position: 'relative', zIndex: 1, px: { xs: 2, sm: 3, md: 4 } }}>
+      <Container maxWidth="lg" sx={{ 
+        mt: { xs: -3, md: -5 }, 
+        position: 'relative', 
+        zIndex: 1, 
+        px: { xs: 2, sm: 3, md: 4 },
+        mx: 'auto' // Explicitly add horizontal auto margins for centering
+      }}>
         <Paper elevation={24} sx={{ borderRadius: 4, py: { xs: 2, md: 3 } }}>
           <Grid container>
             <Grid item xs={12} md={4} sx={{
