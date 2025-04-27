@@ -28,7 +28,7 @@ const HomePage = () => {
       {/* Hero Section with Background Image */}
       <Box sx={{
         position: 'relative',
-        height: { xs: '500px', md: '600px' },
+        height: { xs: '300px', md: '400px' }, // Reduced height
         display: 'flex',
         alignItems: 'center',
         color: 'white',
@@ -56,7 +56,7 @@ const HomePage = () => {
                 sx={{
                   fontWeight: 700,
                   color: 'black',
-                  mb: 3,
+                  mb: 2, // Reduced bottom margin
                   fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                   textAlign: 'center'
                 }}
@@ -67,7 +67,7 @@ const HomePage = () => {
                 variant="h5"
                 paragraph
                 sx={{
-                  mb: 4,
+                  mb: 2, // Reduced bottom margin
                   color: 'black',
                   maxWidth: '800px',
                   fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
@@ -83,7 +83,7 @@ const HomePage = () => {
       </Box>
 
       {/* Search Form Section */}
-      <Box id="search-section" sx={{ py: 8 }}> {/* Adjusted padding since stats section is removed */}
+      <Box id="search-section" sx={{ py: 4 }}> {/* Reduced padding */}
         <SearchForm />
       </Box>
 
