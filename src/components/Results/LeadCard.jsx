@@ -146,11 +146,11 @@ const LeadCard = ({ lead }) => {
         boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
         transition: 'all 0.3s ease',
         mx: 'auto',
-        width: '100%',
-        // Set fixed height for consistent card sizing on larger screens
-        height: { xs: 'auto', sm: '450px', md: '480px' },
-        // Ensure cards have consistent width
-        maxWidth: '100%',
+        // Set fixed dimensions for consistent card sizing on larger screens
+        width: { xs: '100%', sm: '350px', md: '350px' }, // Fixed width for sm/md
+        height: { xs: 'auto', sm: '450px', md: '480px' }, // Fixed height for sm/md
+        maxWidth: '100%', // Still allow shrinking if container is smaller
+        mx: 'auto', // Center the card within its grid column
         '&:hover': {
           transform: 'translateY(-8px)',
           boxShadow: '0 12px 32px rgba(0,0,0,0.12)'
