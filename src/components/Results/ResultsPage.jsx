@@ -524,11 +524,13 @@ const ResultsPage = () => {
       <Container
         maxWidth="xl"
         sx={{
-          px: { xs: 2, sm: 3, md: 4 }
+          px: { xs: 2, sm: 3, md: 4 },
+          width: '100%'
         }}
       >
         <Box sx={{
-          maxWidth: 1400,
+          width: '100%',
+          maxWidth: '100%',
           mx: 'auto'
         }}>
           {/* Back Button */}
@@ -908,7 +910,8 @@ const ResultsPage = () => {
                 container
                 spacing={{ xs: 2, sm: 3, md: 4 }}
                 sx={{
-                  maxWidth: 1400,
+                  width: '100%',
+                  maxWidth: '100%',
                   mx: 'auto'
                 }}
               >
@@ -918,6 +921,7 @@ const ResultsPage = () => {
                     xs={12}      /* 1 card per row on mobile */
                     sm={6}       /* 2 cards per row on tablets */
                     md={4}       /* 3 cards per row on laptops/desktops */
+                    lg={4}       /* Maintain 3 cards per row on large screens */
                     key={lead.id || index}
                     sx={{
                       display: 'flex',
