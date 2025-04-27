@@ -82,59 +82,8 @@ const HomePage = () => {
         </Container>
       </Box>
 
-      {/* Stats Section */}
-      <Container maxWidth="lg" sx={{ 
-        mt: { xs: -3, md: -5 }, 
-        position: 'relative', 
-        zIndex: 1, 
-        px: { xs: 2, sm: 3, md: 4 },
-        mx: 'auto' // Explicitly add horizontal auto margins for centering
-      }}>
-        <Paper elevation={24} sx={{ borderRadius: 4, py: { xs: 2, md: 3 } }}>
-          <Grid container>
-            <Grid item xs={12} md={4} sx={{
-              p: { xs: 2, md: 3 }, // Consistent padding
-              textAlign: 'center',
-              borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
-              borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
-            }}>
-              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
-                10K+
-              </Typography>
-              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}>
-                Verified Business Leads
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4} sx={{
-              p: { xs: 2, md: 3 }, // Consistent padding
-              textAlign: 'center',
-              borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
-              borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
-            }}>
-              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}> {/* Added responsive font size */}
-                50+
-              </Typography>
-              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}> {/* Added responsive font size */}
-                Business Categories
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4} sx={{
-              p: { xs: 2, md: 3 }, // Consistent padding
-              textAlign: 'center'
-            }}>
-              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}> {/* Added responsive font size */}
-                100%
-              </Typography>
-              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}> {/* Added responsive font size */}
-                Verified Information
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Container>
-
       {/* Search Form Section */}
-      <Box id="search-section" sx={{ py: 8, mt: 4 }}>
+      <Box id="search-section" sx={{ py: 8 }}> {/* Adjusted padding since stats section is removed */}
         <SearchForm />
       </Box>
 
