@@ -511,7 +511,13 @@ const ResultsPage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: { xs: 1, md: 4 }, mb: { xs: 6, md: 8 }, px: { xs: 1, sm: 3, md: 4 } }}>
+    <Container maxWidth="lg" sx={{
+      mt: { xs: 1, md: 4 },
+      mb: { xs: 6, md: 8 },
+      px: { xs: 1, sm: 3, md: 4 },
+      mx: 'auto',
+      width: '100%'
+    }}>
       <Box sx={{ mb: { xs: 2, md: 5 }, mt: { xs: 0.5, md: 2 } }}>
         <Button
           startIcon={<ArrowBackIcon />}
@@ -598,7 +604,10 @@ const ResultsPage = () => {
             borderRadius: 3,
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
             bgcolor: 'rgba(255, 255, 255, 0.8)',
-            backdropFilter: 'blur(8px)'
+            backdropFilter: 'blur(8px)',
+            mx: 'auto',
+            width: '100%',
+            maxWidth: '1200px'
           }}
         >
           <Typography
@@ -620,7 +629,10 @@ const ResultsPage = () => {
           <Box sx={{
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-            gap: { xs: 2, sm: 2.5, md: 3 }
+            gap: { xs: 2, sm: 2.5, md: 3 },
+            width: '100%',
+            mx: 'auto',
+            justifyContent: 'center'
           }}>
             <Box sx={{ width: '100%' }}>
               <FormControl fullWidth size="small" sx={{ mb: 1 }}>
@@ -874,31 +886,6 @@ const ResultsPage = () => {
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button
                   variant="contained"
-                  startIcon={<FileDownloadIcon />}
-                  onClick={() => {
-                    setExportOption('csv');
-                    handleExportToSheets();
-                  }}
-                  disabled={loading || leads.length === 0}
-                  sx={{
-                    borderRadius: 2,
-                    px: { xs: 1.5, md: 2 },
-                    py: { xs: 1, md: 1.2 },
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    fontSize: { xs: '0.75rem', md: '0.875rem' },
-                    boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
-                    background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
-                    '&:hover': {
-                      boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)',
-                    }
-                  }}
-                >
-                  {loading && exportOption === 'csv' ? 'Exporting...' : 'Export to CSV'}
-                </Button>
-
-                <Button
-                  variant="contained"
                   startIcon={<GoogleIcon />}
                   onClick={() => {
                     setExportOption('google');
@@ -922,6 +909,31 @@ const ResultsPage = () => {
                 >
                   {loading && exportOption === 'google' ? 'Exporting...' : 'Export to Google Sheets'}
                 </Button>
+
+                <Button
+                  variant="contained"
+                  startIcon={<FileDownloadIcon />}
+                  onClick={() => {
+                    setExportOption('csv');
+                    handleExportToSheets();
+                  }}
+                  disabled={loading || leads.length === 0}
+                  sx={{
+                    borderRadius: 2,
+                    px: { xs: 1.5, md: 2 },
+                    py: { xs: 1, md: 1.2 },
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
+                    boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
+                    background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
+                    '&:hover': {
+                      boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)',
+                    }
+                  }}
+                >
+                  {loading && exportOption === 'csv' ? 'Exporting...' : 'Export to CSV'}
+                </Button>
               </Box>
             </Box>
 
@@ -930,8 +942,9 @@ const ResultsPage = () => {
               spacing={{ xs: 2, sm: 3, md: 4 }}
               sx={{
                 mt: { xs: 0.5, md: 1 },
-                mx: { xs: -1, sm: -2 },
-                width: { xs: 'calc(100% + 16px)', sm: 'calc(100% + 32px)' }
+                mx: 'auto',
+                width: '100%',
+                justifyContent: 'center'
               }}
             >
               {leads.map((lead, index) => (

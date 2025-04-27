@@ -109,7 +109,7 @@ const SearchForm = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ px: { xs: 1.5, sm: 3, md: 4 } }}>
+    <Container maxWidth="lg" sx={{ px: { xs: 1.5, sm: 3, md: 4 }, display: 'flex', justifyContent: 'center' }}>
       <Paper
         elevation={isHovered ? 12 : 6}
         sx={{
@@ -120,6 +120,7 @@ const SearchForm = () => {
           background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
           border: '1px solid rgba(0,0,0,0.05)',
           width: '100%',
+          maxWidth: '900px',
           mx: 'auto'
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -283,16 +284,16 @@ const SearchForm = () => {
               </Grid>
             )}
 
-            <Grid 
-              item 
-              xs={12} 
-              sm={location === 'Others' ? 12 : 6} 
+            <Grid
+              item
+              xs={12}
+              sm={location === 'Others' ? 12 : 6}
               md={location === 'Others' ? 12 : 2}
-              sx={{ 
-                mt: { 
-                  xs: location === 'Others' ? 0 : 1, 
-                  md: location === 'Others' ? 2 : 0 
-                } 
+              sx={{
+                mt: {
+                  xs: location === 'Others' ? 0 : 1,
+                  md: location === 'Others' ? 2 : 0
+                }
               }}
             >
               <Zoom in={true} style={{ transitionDelay: '250ms' }}>
@@ -398,10 +399,10 @@ const SearchForm = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity={snackbarSeverity} 
-          sx={{ 
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{
             width: '100%',
             fontSize: { xs: '0.875rem', md: '1rem' }
           }}

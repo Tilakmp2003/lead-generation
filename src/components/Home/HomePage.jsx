@@ -26,7 +26,7 @@ const HomePage = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Hero Section with Background Image */}
-      <Box sx={{ 
+      <Box sx={{
         position: 'relative',
         height: { xs: '500px', md: '600px' },
         display: 'flex',
@@ -146,8 +146,8 @@ const HomePage = () => {
             component="h2"
             align="center"
             gutterBottom
-            sx={{ 
-              mb: { xs: 1, md: 2 }, 
+            sx={{
+              mb: { xs: 1, md: 2 },
               fontWeight: 600,
               fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
             }}
@@ -158,9 +158,9 @@ const HomePage = () => {
             variant="subtitle1"
             align="center"
             color="text.secondary"
-            sx={{ 
-              mb: { xs: 4, md: 6 }, 
-              maxWidth: 700, 
+            sx={{
+              mb: { xs: 4, md: 6 },
+              maxWidth: 700,
               mx: 'auto',
               fontSize: { xs: '0.875rem', sm: '1rem' },
               px: { xs: 2, sm: 0 }
@@ -169,7 +169,7 @@ const HomePage = () => {
             Our lead generation process is simple, fast, and effective
           </Typography>
 
-          <Grid container spacing={{ xs: 3, md: 4 }} justifyContent="center">
+          <Grid container spacing={{ xs: 3, md: 4 }} justifyContent="center" sx={{ mx: 'auto' }}>
             <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Paper
                 elevation={0}
@@ -182,6 +182,9 @@ const HomePage = () => {
                   borderColor: 'divider',
                   borderRadius: 4,
                   transition: 'all 0.3s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                   '&:hover': {
                     boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
                     transform: 'translateY(-10px)',
@@ -222,6 +225,9 @@ const HomePage = () => {
                   borderColor: 'divider',
                   borderRadius: 4,
                   transition: 'all 0.3s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                   '&:hover': {
                     boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
                     transform: 'translateY(-10px)',
@@ -262,6 +268,9 @@ const HomePage = () => {
                   borderColor: 'divider',
                   borderRadius: 4,
                   transition: 'all 0.3s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                   '&:hover': {
                     boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
                     transform: 'translateY(-10px)',
@@ -300,8 +309,8 @@ const HomePage = () => {
           component="h2"
           gutterBottom
           align="center"
-          sx={{ 
-            mb: { xs: 1, md: 2 }, 
+          sx={{
+            mb: { xs: 1, md: 2 },
             fontWeight: 600,
             fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
           }}
@@ -312,9 +321,9 @@ const HomePage = () => {
           variant="subtitle1"
           align="center"
           color="text.secondary"
-          sx={{ 
-            mb: { xs: 4, md: 6 }, 
-            maxWidth: 700, 
+          sx={{
+            mb: { xs: 4, md: 6 },
+            maxWidth: 700,
             mx: 'auto',
             fontSize: { xs: '0.875rem', sm: '1rem' },
             px: { xs: 2, sm: 0 }
@@ -323,9 +332,17 @@ const HomePage = () => {
           We provide the most accurate and comprehensive business lead data
         </Typography>
 
-        <Grid container spacing={{ xs: 3, md: 4 }} justifyContent="center">
+        <Grid container spacing={{ xs: 3, md: 4 }} justifyContent="center" sx={{ mx: 'auto' }}>
           <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Card sx={{ height: '100%', overflow: 'visible', width: '100%', maxWidth: 350 }}>
+            <Card sx={{
+              height: '100%',
+              overflow: 'visible',
+              width: '100%',
+              maxWidth: 350,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}>
               <Box
                 sx={{
                   p: 2,
@@ -387,7 +404,15 @@ const HomePage = () => {
           </Grid>
 
           <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Card sx={{ height: '100%', overflow: 'visible', width: '100%', maxWidth: 350 }}>
+            <Card sx={{
+              height: '100%',
+              overflow: 'visible',
+              width: '100%',
+              maxWidth: 350,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}>
               <Box
                 sx={{
                   p: 2,
@@ -449,7 +474,15 @@ const HomePage = () => {
           </Grid>
 
           <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Card sx={{ height: '100%', overflow: 'visible', width: '100%', maxWidth: 350 }}>
+            <Card sx={{
+              height: '100%',
+              overflow: 'visible',
+              width: '100%',
+              maxWidth: 350,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}>
               <Box
                 sx={{
                   p: 2,
@@ -741,7 +774,7 @@ const HomePage = () => {
             variant="h3"
             component="h2"
             gutterBottom
-            sx={{ 
+            sx={{
               fontWeight: 700,
               fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
             }}
@@ -752,9 +785,9 @@ const HomePage = () => {
             variant="h6"
             paragraph
             color="text.secondary"
-            sx={{ 
-              mb: 4, 
-              maxWidth: 700, 
+            sx={{
+              mb: 4,
+              maxWidth: 700,
               mx: 'auto',
               fontSize: { xs: '1rem', sm: '1.25rem' },
               px: { xs: 2, sm: 0 }

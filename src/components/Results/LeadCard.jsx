@@ -150,6 +150,9 @@ const LeadCard = ({ lead }) => {
         bgcolor: 'background.paper',
         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
         transition: 'transform 0.2s, box-shadow 0.2s',
+        mx: 'auto',
+        width: '100%',
+        maxWidth: { xs: '100%', sm: '450px' },
         '&:hover': {
           transform: 'translateY(-4px)',
           boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
@@ -272,7 +275,7 @@ const LeadCard = ({ lead }) => {
                 {lead.contactDetails.email}
               </Link>
             )}
-            
+
             {lead.contactDetails.phone && (
               <Link
                 href={`tel:${lead.contactDetails.phone}`}
@@ -328,7 +331,7 @@ const LeadCard = ({ lead }) => {
             {Object.entries(lead.contactDetails.socialMedia).map(([platform, url]) => {
               if (!url) return null;
               const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
-              
+
               return (
                 <Tooltip key={platform} title={platform.charAt(0).toUpperCase() + platform.slice(1)}>
                   <IconButton

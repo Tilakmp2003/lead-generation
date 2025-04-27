@@ -168,7 +168,12 @@ function App() {
           }}>
             <Header />
 
-            <Box component="main" sx={{ flexGrow: 1 }}>
+            <Box component="main" sx={{
+              flexGrow: 1,
+              width: '100%',
+              maxWidth: '100vw',
+              overflowX: 'hidden'
+            }}>
               <Routes>
                 {/* Public routes */}
                 <Route path="/login" element={<Login />} />

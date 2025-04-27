@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
           </Typography>
           <Typography paragraph>
             For privacy concerns, contact us at:
-            Email: princymagdaline2003@gmail.com
+            Email: rxtilak3@gmail.com
           </Typography>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
