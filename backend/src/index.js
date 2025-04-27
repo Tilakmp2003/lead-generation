@@ -19,7 +19,12 @@ const PORT = process.env.PORT || 3000;
 // Configure CORS
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173', 'https://leadfind.vercel.app'];
+  : [
+      'http://localhost:5173',
+      'http://localhost:4173', // Vite preview
+      'https://leadfind.vercel.app',
+      'https://lead-generation.vercel.app'
+    ];
 
 console.log('Allowed CORS Origins:', allowedOrigins);
 
@@ -27,12 +32,12 @@ console.log('Allowed CORS Origins:', allowedOrigins);
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) {
+    if (!origin || process.env.NODE_ENV === 'development') {
       return callback(null, true);
     }
 
     // Check if the origin is allowed
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    if (allowedOrigins.some(allowedOrigin => origin.startsWith(allowedOrigin))) {
       callback(null, true);
     } else {
       console.warn(`Origin ${origin} not allowed by CORS`);
@@ -41,7 +46,9 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400, // 24 hours
   optionsSuccessStatus: 200
 };
 
