@@ -48,7 +48,7 @@ const HomePage = () => {
       }}>
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={7}>
+            <Grid item xs={12}>
               <Typography
                 variant="h2"
                 component="h1"
@@ -58,7 +58,7 @@ const HomePage = () => {
                   color: 'black',
                   mb: 3,
                   fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
-                  textAlign: { xs: 'center', md: 'left' }
+                  textAlign: 'center'
                 }}
               >
                 Find Retail Shop Owners in Any Location
@@ -69,31 +69,14 @@ const HomePage = () => {
                 sx={{
                   mb: 4,
                   color: 'black',
-                  maxWidth: '90%',
+                  maxWidth: '800px',
                   fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
-                  textAlign: { xs: 'center', md: 'left' },
-                  mx: { xs: 'auto', md: 0 }
+                  textAlign: 'center',
+                  mx: 'auto'
                 }}
               >
                 Get verified contact details of retail shop owners and export them directly to Google Sheets
               </Typography>
-            </Grid>
-            <Grid item xs={12} md={5} sx={{ display: { xs: 'none', md: 'block' } }}>
-              <Box
-                component="img"
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
-                alt="Lead Generation"
-                sx={{
-                  width: '100%',
-                  borderRadius: 4,
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-                  transform: 'perspective(1000px) rotateY(-15deg)',
-                  transition: 'transform 0.5s ease',
-                  '&:hover': {
-                    transform: 'perspective(1000px) rotateY(-5deg) scale(1.02)',
-                  }
-                }}
-              />
             </Grid>
           </Grid>
         </Container>
