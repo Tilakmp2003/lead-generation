@@ -28,8 +28,8 @@ const getCoordinatesForLocation = async (location) => {
 
   try {
     if (!config.google.placesApiKey) {
-      console.error('Google Places API key is missing');
-      throw new Error('Google Places API key is missing');
+      console.warn('Google Places API key is missing, using fallback coordinates');
+      return { lat: 20.5937, lng: 78.9629 }; // Center of India as fallback
     }
 
     const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchLocation)}&key=${config.google.placesApiKey}`;
