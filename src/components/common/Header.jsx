@@ -302,7 +302,6 @@ const Header = () => {
         <List>
           {menuItems.map((item) => (
             <ListItem
-              button
               key={item.text}
               component={Link}
               to={item.path}
@@ -355,7 +354,6 @@ const Header = () => {
                 />
               </ListItem>
               <ListItem
-                button
                 onClick={handleLogout}
                 sx={{
                   borderRadius: 2,
@@ -374,7 +372,6 @@ const Header = () => {
           ) : (
             <>
               <ListItem
-                button
                 component={Link}
                 to="/login"
                 sx={{
@@ -391,7 +388,6 @@ const Header = () => {
                 <ListItemText primary="Login" />
               </ListItem>
               <ListItem
-                button
                 component={Link}
                 to="/register"
                 sx={{

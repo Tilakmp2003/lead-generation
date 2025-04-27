@@ -777,7 +777,7 @@ const ResultsPage = () => {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={handleExportCSV}
+                onClick={() => handleExportOptionChange('csv')} // Changed from handleExportCSV
                 startIcon={<FileDownloadIcon />}
                 sx={{
                   borderRadius: { xs: 1.5, md: 2 },
@@ -792,7 +792,7 @@ const ResultsPage = () => {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={handleExportGoogleSheets}
+                onClick={() => handleExportOptionChange('google')} // Changed from handleExportGoogleSheets
                 startIcon={<GoogleIcon />}
                 sx={{
                   borderRadius: { xs: 1.5, md: 2 },
