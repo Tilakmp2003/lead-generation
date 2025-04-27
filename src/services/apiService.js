@@ -1,7 +1,7 @@
-import { supabase } from './supabase';
+import supabase from './supabaseClient';
 
-// Backend API URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Backend API URL - Use environment variable or fallback to deployed URL
+const API_URL = import.meta.env.VITE_API_URL || 'https://lead-gen-fsei.onrender.com';
 
 const searchLeads = async (sector, location, options = {}) => {
   try {
@@ -13,7 +13,8 @@ const searchLeads = async (sector, location, options = {}) => {
     });
 
     let headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     };
 
     // Add auth header if session exists
@@ -22,18 +23,21 @@ const searchLeads = async (sector, location, options = {}) => {
       headers['Authorization'] = `Bearer ${session.data.session.access_token}`;
     }
 
-    const response = await fetch(`${API_URL}/leads/search?${params.toString()}`, {
+    const response = await fetch(`${API_URL}/api/leads/search?${params.toString()}`, {
       method: 'GET',
-      headers
+      headers,
+      mode: 'cors'
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch leads');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || `Failed to fetch leads: ${response.status}`);
     }
 
     const data = await response.json();
     return data.leads || [];
   } catch (error) {
+    console.error('API Error:', error);
     throw new Error('Error searching leads: ' + error.message);
   }
 };
@@ -111,7 +115,8 @@ const getExportHistory = async (userId) => {
 const getLead = async (id) => {
   try {
     let headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     };
 
     // Add auth header if session exists
@@ -120,18 +125,21 @@ const getLead = async (id) => {
       headers['Authorization'] = `Bearer ${session.data.session.access_token}`;
     }
 
-    const response = await fetch(`${API_URL}/leads/${id}`, {
+    const response = await fetch(`${API_URL}/api/leads/${id}`, {
       method: 'GET',
-      headers
+      headers,
+      mode: 'cors'
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch lead details');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Failed to fetch lead details');
     }
 
     const data = await response.json();
     return data.lead;
   } catch (error) {
+    console.error('API Error:', error);
     throw new Error('Error getting lead: ' + error.message);
   }
 };
