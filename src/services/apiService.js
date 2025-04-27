@@ -136,7 +136,7 @@ const getLead = async (id) => {
   }
 };
 
-export {
+const apiService = {
   searchLeads,
   saveSearch,
   getSavedSearches,
@@ -144,3 +144,5 @@ export {
   getExportHistory,
   getLead
 };
+
+export default apiService;
