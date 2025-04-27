@@ -68,7 +68,7 @@ const TermsOfService = () => {
           </Typography>
           <Typography paragraph>
             For questions about these terms, contact:
-            Email: princymagdaline2003@gmail.com
+            Email: rxtilak3@gmail.com
           </Typography>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
