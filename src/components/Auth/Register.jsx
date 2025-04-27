@@ -100,147 +100,255 @@ const Register = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          mt: 8,
-          borderRadius: 3,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
-        }}
-      >
-        <Typography variant="h4" component="h1" align="center" gutterBottom fontWeight="bold">
-          Create an Account
-        </Typography>
-
-        <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-          Join our lead generation platform
-        </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            {success}
-          </Alert>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Full Name"
-            type="text"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            disabled={isSubmitting}
-            autoComplete="name"
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            label="Email Address"
-            type="email"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isSubmitting}
-            autoComplete="email"
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isSubmitting}
-            autoComplete="new-password"
-            sx={{ mb: 2 }}
-            helperText="Password must be at least 6 characters"
-          />
-
-          <TextField
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            disabled={isSubmitting}
-            autoComplete="new-password"
-            sx={{ mb: 3 }}
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            size="large"
-            disabled={isSubmitting}
-            startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <PersonAddIcon />}
-            sx={{
-              py: 1.5,
-              mb: 2,
-              borderRadius: 2,
-              textTransform: 'none',
-              fontSize: '1rem'
-            }}
-          >
-            {isSubmitting ? 'Registering...' : 'Register'}
-          </Button>
-        </form>
-
-        <Divider sx={{ my: 3 }}>
-          <Typography variant="body2" color="text.secondary">
-            OR
-          </Typography>
-        </Divider>
-
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={handleGoogleLogin}
-          disabled={isSubmitting}
-          startIcon={<GoogleIcon />}
+    <Box 
+      sx={{
+        minHeight: 'calc(100vh - 64px)', // Adjust for header height
+        display: 'flex',
+        alignItems: 'center',
+        py: { xs: 4, sm: 6, md: 8 },
+        px: { xs: 2, sm: 4 },
+        bgcolor: 'background.default'
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper
+          elevation={6}
           sx={{
-            py: 1.5,
-            mb: 3,
-            borderRadius: 2,
-            textTransform: 'none',
-            fontSize: '1rem'
+            p: { xs: 3, sm: 4, md: 5 },
+            borderRadius: 3,
+            bgcolor: 'background.paper',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            textAlign: 'center'
           }}
         >
-          Continue with Google
-        </Button>
-
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
-          <Typography variant="body2">
-            Already have an account?{' '}
-            <Link to="/login" style={{ color: 'primary.main', fontWeight: 'bold', textDecoration: 'none' }}>
-              Login
-            </Link>
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            gutterBottom 
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: '1.75rem', sm: '2rem' },
+              color: 'text.primary',
+              mb: 1
+            }}
+          >
+            Create Account
           </Typography>
-        </Box>
-      </Paper>
-    </Container>
+
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              mb: 4,
+              color: 'text.secondary',
+              fontSize: { xs: '0.875rem', sm: '1rem' }
+            }}
+          >
+            Join our lead generation platform
+          </Typography>
+
+          {error && (
+            <Alert 
+              severity="error" 
+              sx={{ 
+                mb: 3,
+                borderRadius: 2,
+                '& .MuiAlert-message': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }
+              }}
+            >
+              {error}
+            </Alert>
+          )}
+
+          {success && (
+            <Alert 
+              severity="success" 
+              sx={{ 
+                mb: 3,
+                borderRadius: 2,
+                '& .MuiAlert-message': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }
+              }}
+            >
+              {success}
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Full Name"
+              type="text"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              disabled={isSubmitting}
+              autoComplete="name"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }
+              }}
+            />
+
+            <TextField
+              label="Email Address"
+              type="email"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isSubmitting}
+              autoComplete="email"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }
+              }}
+            />
+
+            <TextField
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isSubmitting}
+              autoComplete="new-password"
+              helperText="Password must be at least 6 characters"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }
+              }}
+            />
+
+            <TextField
+              label="Confirm Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              disabled={isSubmitting}
+              autoComplete="new-password"
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }
+              }}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              size="large"
+              disabled={isSubmitting}
+              startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <PersonAddIcon />}
+              sx={{
+                py: 1.5,
+                mb: 2,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontSize: '1rem',
+                boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)'
+                }
+              }}
+            >
+              {isSubmitting ? 'Registering...' : 'Register'}
+            </Button>
+          </form>
+
+          <Divider 
+            sx={{ 
+              my: 3,
+              '&::before, &::after': {
+                borderColor: 'divider'
+              }
+            }}
+          >
+            <Typography 
+              variant="body2" 
+              sx={{
+                color: 'text.secondary',
+                px: 2,
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              }}
+            >
+              OR
+            </Typography>
+          </Divider>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleGoogleLogin}
+            disabled={isSubmitting}
+            startIcon={<GoogleIcon />}
+            sx={{
+              py: 1.5,
+              mb: 3,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '1rem',
+              borderColor: 'divider',
+              '&:hover': {
+                borderColor: 'primary.main',
+                bgcolor: 'rgba(46, 125, 50, 0.04)'
+              }
+            }}
+          >
+            Continue with Google
+          </Button>
+
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: 'text.secondary',
+                fontSize: { xs: '0.875rem', sm: '1rem' }
+              }}
+            >
+              Already have an account?{' '}
+              <Link 
+                to="/login" 
+                style={{ 
+                  color: '#2e7d32',
+                  fontWeight: 600,
+                  textDecoration: 'none'
+                }}
+              >
+                Login
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

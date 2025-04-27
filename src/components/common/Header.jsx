@@ -101,28 +101,40 @@ const Header = () => {
           }}
         >
           <Container maxWidth="lg">
-            <Toolbar disableGutters sx={{ py: 1 }}>
+            <Toolbar 
+              disableGutters 
+              sx={{ 
+                py: { xs: 1, md: 1.5 },
+                gap: 2
+              }}
+            >
               {/* Logo */}
               <Typography
                 variant="h5"
                 component={Link}
                 to="/"
                 sx={{
-                  flexGrow: 1,
+                  flexGrow: { xs: 1, md: 0 },
                   fontWeight: 700,
                   textDecoration: 'none',
                   color: 'primary.main',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1
+                  gap: 1.5,
+                  fontSize: { xs: '1.25rem', md: '1.5rem' },
+                  mr: { md: 4 }
                 }}
               >
                 <Avatar
                   sx={{
                     bgcolor: 'primary.main',
-                    width: 40,
-                    height: 40,
-                    boxShadow: '0 2px 10px rgba(46, 125, 50, 0.3)'
+                    width: { xs: 36, md: 40 },
+                    height: { xs: 36, md: 40 },
+                    boxShadow: '0 2px 10px rgba(46, 125, 50, 0.3)',
+                    transition: 'transform 0.2s ease',
+                    '&:hover': {
+                      transform: 'scale(1.05)'
+                    }
                   }}
                 >
                   <SearchIcon />
@@ -133,7 +145,11 @@ const Header = () => {
               </Typography>
 
               {/* Desktop Navigation */}
-              <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+              <Box sx={{ 
+                display: { xs: 'none', md: 'flex' }, 
+                gap: 1,
+                alignItems: 'center'
+              }}>
                 {menuItems.map((item) => (
                   <Button
                     key={item.text}
@@ -141,10 +157,12 @@ const Header = () => {
                     to={item.path}
                     color="inherit"
                     sx={{
-                      mx: 1,
+                      px: 2,
+                      py: 1,
                       color: isMenuItemActive(item.path) ? 'primary.main' : 'text.primary',
                       fontWeight: isMenuItemActive(item.path) ? 600 : 500,
                       position: 'relative',
+                      borderRadius: 2,
                       '&::after': isMenuItemActive(item.path) ? {
                         content: '""',
                         position: 'absolute',
@@ -154,75 +172,52 @@ const Header = () => {
                         height: '3px',
                         bgcolor: 'primary.main',
                         borderRadius: '3px 3px 0 0'
-                      } : {}
+                      } : {},
+                      '&:hover': {
+                        bgcolor: 'rgba(46, 125, 50, 0.04)'
+                      }
                     }}
                   >
                     {item.text}
                   </Button>
                 ))}
+              </Box>
 
+              {/* User Actions */}
+              <Box sx={{ 
+                display: { xs: 'none', md: 'flex' }, 
+                gap: 2,
+                alignItems: 'center',
+                ml: 'auto'
+              }}>
                 {isAuthenticated ? (
-                  <>
-                    <Button
-                      onClick={handleUserMenuOpen}
-                      sx={{
-                        ml: 2,
-                        color: 'text.primary', // Changed from inherit to text.primary (black)
-                        fontWeight: 500 // Added fontWeight for better visibility
-                      }}
-                      startIcon={
-                        <Avatar
-                          sx={{
-                            width: 32,
-                            height: 32,
-                            bgcolor: 'primary.main'
-                          }}
-                        >
-                          {user?.user_metadata?.name ? user.user_metadata.name.charAt(0).toUpperCase() :
-                           user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
-                        </Avatar>
+                  <Button
+                    onClick={handleUserMenuOpen}
+                    sx={{
+                      color: 'text.primary',
+                      fontWeight: 500,
+                      borderRadius: 2,
+                      px: 2,
+                      '&:hover': {
+                        bgcolor: 'rgba(46, 125, 50, 0.04)'
                       }
-                    >
-                      {user?.user_metadata?.name || user?.email?.split('@')[0] || 'My Account'}
-                    </Button>
-                    <Menu
-                      anchorEl={userMenuAnchor}
-                      open={Boolean(userMenuAnchor)}
-                      onClose={handleUserMenuClose}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      PaperProps={{
-                        elevation: 3,
-                        sx: {
-                          mt: 1.5,
-                          minWidth: 180,
-                          borderRadius: 2
-                        }
-                      }}
-                    >
-                      <MenuItem disabled>
-                        <ListItemIcon>
-                          <AccountCircleIcon fontSize="small" />
-                        </ListItemIcon>
-                        <Typography color="text.primary" sx={{ opacity: 0.8 }}>
-                          {user?.email}
-                        </Typography>
-                      </MenuItem>
-                      <Divider />
-                      <MenuItem onClick={handleLogout}>
-                        <ListItemIcon>
-                          <LogoutIcon fontSize="small" />
-                        </ListItemIcon>
-                        Logout
-                      </MenuItem>
-                    </Menu>
-                  </>
+                    }}
+                    startIcon={
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          bgcolor: 'primary.main',
+                          fontSize: '1rem'
+                        }}
+                      >
+                        {user?.user_metadata?.name ? user.user_metadata.name.charAt(0).toUpperCase() :
+                         user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
+                      </Avatar>
+                    }
+                  >
+                    {user?.user_metadata?.name || user?.email?.split('@')[0] || 'My Account'}
+                  </Button>
                 ) : (
                   <>
                     <Button
@@ -232,7 +227,8 @@ const Header = () => {
                       to="/login"
                       sx={{
                         borderRadius: 2,
-                        px: 2
+                        px: 3,
+                        py: 1
                       }}
                     >
                       Login
@@ -244,8 +240,8 @@ const Header = () => {
                       to="/register"
                       sx={{
                         borderRadius: 2,
-                        px: 2,
-                        ml: 1
+                        px: 3,
+                        py: 1
                       }}
                     >
                       Register
@@ -262,7 +258,8 @@ const Header = () => {
                 onClick={handleMobileMenuToggle}
                 sx={{
                   display: { md: 'none' },
-                  color: 'text.primary'
+                  color: 'text.primary',
+                  p: 1
                 }}
               >
                 <MenuIcon />
@@ -286,7 +283,12 @@ const Header = () => {
           }
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 2 
+        }}>
           <Typography variant="h6" color="primary" fontWeight="bold">
             Menu
           </Typography>
@@ -314,7 +316,10 @@ const Header = () => {
                 }
               }}
             >
-              <ListItemIcon sx={{ color: isMenuItemActive(item.path) ? 'primary.main' : 'inherit' }}>
+              <ListItemIcon sx={{ 
+                color: isMenuItemActive(item.path) ? 'primary.main' : 'inherit',
+                minWidth: 40
+              }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText
@@ -345,10 +350,7 @@ const Header = () => {
                   secondary={user?.email}
                   primaryTypographyProps={{
                     fontWeight: 600,
-                    color: 'text.primary' // Ensure text is black
-                  }}
-                  secondaryTypographyProps={{
-                    color: 'text.secondary' // Ensure secondary text has proper contrast
+                    color: 'text.primary'
                   }}
                 />
               </ListItem>
@@ -409,6 +411,60 @@ const Header = () => {
           )}
         </List>
       </Drawer>
+
+      {/* User Menu */}
+      <Menu
+        anchorEl={userMenuAnchor}
+        open={Boolean(userMenuAnchor)}
+        onClose={handleUserMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        PaperProps={{
+          elevation: 3,
+          sx: {
+            mt: 1.5,
+            minWidth: 200,
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+          }
+        }}
+      >
+        <MenuItem 
+          disabled 
+          sx={{ 
+            py: 1.5,
+            opacity: 0.8 
+          }}
+        >
+          <ListItemIcon>
+            <AccountCircleIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography color="text.primary">
+            {user?.email}
+          </Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem 
+          onClick={handleLogout}
+          sx={{ 
+            py: 1.5,
+            '&:hover': {
+              bgcolor: 'rgba(46, 125, 50, 0.04)'
+            }
+          }}
+        >
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" color="primary" />
+          </ListItemIcon>
+          <Typography color="primary.main">Logout</Typography>
+        </MenuItem>
+      </Menu>
     </>
   );
 };

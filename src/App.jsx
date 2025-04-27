@@ -27,13 +27,13 @@ import { initGoogleSheetsAPI } from './services/googleSheetsService';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2e7d32', // Green color for a fresh look
+      main: '#2e7d32',
       light: '#60ad5e',
       dark: '#005005',
       contrastText: '#fff',
     },
     secondary: {
-      main: '#ff6d00', // Orange for call-to-action elements
+      main: '#ff6d00',
       light: '#ff9e40',
       dark: '#c43e00',
       contrastText: '#fff',
@@ -56,24 +56,76 @@ const theme = createTheme({
     ].join(','),
     h1: {
       fontWeight: 700,
+      fontSize: '3rem',
+      lineHeight: 1.2,
+      '@media (max-width:600px)': {
+        fontSize: '2rem',
+      },
     },
     h2: {
       fontWeight: 600,
+      fontSize: '2.5rem',
+      lineHeight: 1.3,
+      '@media (max-width:600px)': {
+        fontSize: '1.75rem',
+      },
     },
     h3: {
       fontWeight: 600,
+      fontSize: '2rem',
+      lineHeight: 1.4,
+      '@media (max-width:600px)': {
+        fontSize: '1.5rem',
+      },
     },
     h4: {
       fontWeight: 600,
+      fontSize: '1.75rem',
+      lineHeight: 1.4,
+      '@media (max-width:600px)': {
+        fontSize: '1.25rem',
+      },
     },
     h5: {
       fontWeight: 500,
+      fontSize: '1.5rem',
+      lineHeight: 1.5,
+      '@media (max-width:600px)': {
+        fontSize: '1.1rem',
+      },
     },
     h6: {
       fontWeight: 500,
+      fontSize: '1.25rem',
+      lineHeight: 1.6,
+      '@media (max-width:600px)': {
+        fontSize: '1rem',
+      },
+    },
+    subtitle1: {
+      fontSize: '1rem',
+      lineHeight: 1.6,
+      letterSpacing: '0.0075em',
+    },
+    subtitle2: {
+      fontSize: '0.875rem',
+      lineHeight: 1.6,
+      letterSpacing: '0.00938em',
+    },
+    body1: {
+      fontSize: '1rem',
+      lineHeight: 1.7,
+      letterSpacing: '0.00938em',
+    },
+    body2: {
+      fontSize: '0.875rem',
+      lineHeight: 1.7,
+      letterSpacing: '0.01071em',
     },
     button: {
       fontWeight: 500,
+      fontSize: '0.875rem',
+      letterSpacing: '0.02857em',
       textTransform: 'none',
     },
   },
@@ -85,12 +137,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8,
-          padding: '10px 24px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          padding: '8px 20px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
           transition: 'all 0.3s ease',
+          textTransform: 'none',
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 6px 10px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           },
         },
         containedPrimary: {
@@ -104,12 +157,12 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+          borderRadius: 16,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
           transition: 'transform 0.3s ease, box-shadow 0.3s ease',
           '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: '0 12px 20px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(-4px)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
           },
         },
       },
@@ -117,7 +170,72 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 16,
+        },
+        elevation1: {
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        },
+        elevation2: {
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+            },
+            '&.Mui-focused': {
+              boxShadow: '0 4px 12px rgba(46, 125, 50, 0.1)',
+            },
+          },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            transform: 'translateY(-1px)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          },
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 16,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+        standardSuccess: {
+          backgroundColor: 'rgba(46, 125, 50, 0.1)',
+          color: '#2e7d32',
+        },
+        standardError: {
+          backgroundColor: 'rgba(211, 47, 47, 0.1)',
+          color: '#d32f2f',
+        },
+        standardWarning: {
+          backgroundColor: 'rgba(237, 108, 2, 0.1)',
+          color: '#ed6c02',
+        },
+        standardInfo: {
+          backgroundColor: 'rgba(2, 136, 209, 0.1)',
+          color: '#0288d1',
         },
       },
     },

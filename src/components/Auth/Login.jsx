@@ -87,112 +87,199 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          mt: 8,
-          borderRadius: 3,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
-        }}
-      >
-        <Typography variant="h4" component="h1" align="center" gutterBottom fontWeight="bold">
-          Login to Your Account
-        </Typography>
-
-        <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-          Access your lead generation dashboard
-        </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email Address"
-            type="email"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isSubmitting}
-            autoComplete="email"
-            sx={{ mb: 2 }}
-          />
-
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isSubmitting}
-            autoComplete="current-password"
-            sx={{ mb: 3 }}
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            size="large"
-            disabled={isSubmitting}
-            startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <LoginIcon />}
-            sx={{
-              py: 1.5,
-              mb: 2,
-              borderRadius: 2,
-              textTransform: 'none',
-              fontSize: '1rem'
-            }}
-          >
-            {isSubmitting ? 'Logging in...' : 'Login'}
-          </Button>
-        </form>
-
-        <Divider sx={{ my: 3 }}>
-          <Typography variant="body2" color="text.secondary">
-            OR
-          </Typography>
-        </Divider>
-
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={handleGoogleLogin}
-          disabled={isSubmitting}
-          startIcon={<GoogleIcon />}
+    <Box 
+      sx={{
+        minHeight: 'calc(100vh - 64px)', // Adjust for header height
+        display: 'flex',
+        alignItems: 'center',
+        py: { xs: 4, sm: 6, md: 8 },
+        px: { xs: 2, sm: 4 },
+        bgcolor: 'background.default'
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper
+          elevation={6}
           sx={{
-            py: 1.5,
-            mb: 3,
-            borderRadius: 2,
-            textTransform: 'none',
-            fontSize: '1rem'
+            p: { xs: 3, sm: 4, md: 5 },
+            borderRadius: 3,
+            bgcolor: 'background.paper',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            textAlign: 'center'
           }}
         >
-          Continue with Google
-        </Button>
-
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
-          <Typography variant="body2">
-            Don't have an account?{' '}
-            <Link to="/register" style={{ color: 'primary.main', fontWeight: 'bold', textDecoration: 'none' }}>
-              Register now
-            </Link>
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            gutterBottom 
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: '1.75rem', sm: '2rem' },
+              color: 'text.primary',
+              mb: 1
+            }}
+          >
+            Welcome Back
           </Typography>
-        </Box>
-      </Paper>
-    </Container>
+
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              mb: 4,
+              color: 'text.secondary',
+              fontSize: { xs: '0.875rem', sm: '1rem' }
+            }}
+          >
+            Log in to access your lead generation dashboard
+          </Typography>
+
+          {error && (
+            <Alert 
+              severity="error" 
+              sx={{ 
+                mb: 3,
+                borderRadius: 2,
+                '& .MuiAlert-message': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }
+              }}
+            >
+              {error}
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Email Address"
+              type="email"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isSubmitting}
+              autoComplete="email"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }
+              }}
+            />
+
+            <TextField
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isSubmitting}
+              autoComplete="current-password"
+              sx={{
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  bgcolor: 'background.paper'
+                }
+              }}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              size="large"
+              disabled={isSubmitting}
+              startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <LoginIcon />}
+              sx={{
+                py: 1.5,
+                mb: 2,
+                borderRadius: 2,
+                textTransform: 'none',
+                fontSize: '1rem',
+                boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)'
+                }
+              }}
+            >
+              {isSubmitting ? 'Logging in...' : 'Login'}
+            </Button>
+          </form>
+
+          <Divider 
+            sx={{ 
+              my: 3,
+              '&::before, &::after': {
+                borderColor: 'divider'
+              }
+            }}
+          >
+            <Typography 
+              variant="body2" 
+              sx={{
+                color: 'text.secondary',
+                px: 2,
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              }}
+            >
+              OR
+            </Typography>
+          </Divider>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleGoogleLogin}
+            disabled={isSubmitting}
+            startIcon={<GoogleIcon />}
+            sx={{
+              py: 1.5,
+              mb: 3,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '1rem',
+              borderColor: 'divider',
+              '&:hover': {
+                borderColor: 'primary.main',
+                bgcolor: 'rgba(46, 125, 50, 0.04)'
+              }
+            }}
+          >
+            Continue with Google
+          </Button>
+
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: 'text.secondary',
+                fontSize: { xs: '0.875rem', sm: '1rem' }
+              }}
+            >
+              Don't have an account?{' '}
+              <Link 
+                to="/register" 
+                style={{ 
+                  color: '#2e7d32',
+                  fontWeight: 600,
+                  textDecoration: 'none'
+                }}
+              >
+                Register now
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

@@ -148,56 +148,27 @@ const LeadCard = ({ lead }) => {
         overflow: 'visible',
         borderRadius: 3,
         bgcolor: 'background.paper',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-        transition: 'transform 0.2s, box-shadow 0.2s',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+        transition: 'all 0.3s ease',
         mx: 'auto',
         width: '100%',
         maxWidth: { xs: '100%', sm: '450px' },
         '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+          transform: 'translateY(-8px)',
+          boxShadow: '0 12px 32px rgba(0,0,0,0.12)'
         }
       }}
     >
-      {/* Verification Badge */}
-      <Badge
-        sx={{
-          position: 'absolute',
-          top: -8,
-          right: 16,
-          zIndex: 1
-        }}
-        badgeContent={
-          <Tooltip title={`Verification Score: ${lead.verificationScore}%`}>
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                bgcolor: lead.verificationScore >= 75 ? 'success.main' :
-                         lead.verificationScore >= 50 ? 'primary.main' :
-                         lead.verificationScore >= 25 ? 'warning.main' : 'error.main',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-                border: '2px solid white'
-              }}
-            >
-              <VerifiedIcon sx={{ fontSize: '1rem' }} />
-            </Avatar>
-          </Tooltip>
-        }
-      >
-        <Box sx={{ width: 1, height: 1 }} />
-      </Badge>
-
-      {/* Header Section */}
       <CardHeader
         avatar={
           <Avatar
             sx={{
               bgcolor: getAvatarColor(lead.businessType),
-              width: { xs: 48, md: 56 },
-              height: { xs: 48, md: 56 },
-              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-              fontSize: { xs: '1.1rem', md: '1.25rem' }
+              width: { xs: 52, md: 60 },
+              height: { xs: 52, md: 60 },
+              fontSize: { xs: '1.25rem', md: '1.5rem' },
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              border: '3px solid white'
             }}
           >
             {getInitials(lead.businessName)}
@@ -209,7 +180,7 @@ const LeadCard = ({ lead }) => {
             component="h3"
             sx={{
               fontWeight: 600,
-              fontSize: { xs: '1rem', md: '1.125rem' },
+              fontSize: { xs: '1.1rem', md: '1.25rem' },
               lineHeight: 1.3,
               mb: 0.5,
               color: 'text.primary'
@@ -220,7 +191,7 @@ const LeadCard = ({ lead }) => {
         }
         subheader={
           <Stack direction="row" spacing={1} alignItems="center">
-            <StoreIcon sx={{ fontSize: '1rem', color: 'text.secondary' }} />
+            <StoreIcon sx={{ fontSize: '0.9rem', color: 'text.secondary' }} />
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}>
               {lead.businessType}
             </Typography>
@@ -233,29 +204,27 @@ const LeadCard = ({ lead }) => {
             color="primary"
             sx={{
               mt: 0.5,
-              height: { xs: 24, md: 28 },
+              height: { xs: 26, md: 30 },
               fontSize: { xs: '0.7rem', md: '0.8rem' },
               fontWeight: 500,
               background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
-              boxShadow: '0 2px 6px rgba(46, 125, 50, 0.2)',
+              boxShadow: '0 2px 8px rgba(46, 125, 50, 0.25)',
             }}
           />
         }
         sx={{ p: { xs: 2, md: 2.5 } }}
       />
 
-      {/* Content Section */}
       <CardContent sx={{ pt: 0, px: { xs: 2, md: 2.5 }, pb: { xs: 2, md: 2.5 }, flexGrow: 1 }}>
-        {/* Contact Information Box */}
         <Paper
           elevation={0}
           sx={{
             p: { xs: 1.5, md: 2 },
             mb: { xs: 2, md: 2.5 },
-            bgcolor: 'rgba(46, 125, 50, 0.03)',
+            bgcolor: 'rgba(46, 125, 50, 0.04)',
             borderRadius: 2,
             border: '1px solid',
-            borderColor: 'rgba(46, 125, 50, 0.1)'
+            borderColor: 'rgba(46, 125, 50, 0.15)'
           }}
         >
           <Stack spacing={1.5}>
@@ -316,7 +285,7 @@ const LeadCard = ({ lead }) => {
 
         {/* Address */}
         <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: { xs: 2, md: 2.5 } }}>
-          <LocationOnIcon sx={{ fontSize: '1.1rem', mr: 1, mt: 0.2, color: 'text.secondary' }} />
+          <LocationOnIcon sx={{ fontSize: '1.1rem', mr: 1, mt: 0.3, color: 'text.secondary' }} />
           <Typography variant="body2" color="text.secondary" sx={{
             fontSize: { xs: '0.75rem', md: '0.875rem' },
             lineHeight: 1.5
@@ -342,8 +311,9 @@ const LeadCard = ({ lead }) => {
                     rel="noopener noreferrer"
                     sx={{
                       bgcolor: 'rgba(25, 118, 210, 0.08)',
-                      width: { xs: 28, md: 32 },
-                      height: { xs: 28, md: 32 },
+                      width: { xs: 32, md: 36 },
+                      height: { xs: 32, md: 36 },
+                      transition: 'all 0.2s ease',
                       '&:hover': {
                         bgcolor: 'rgba(25, 118, 210, 0.15)',
                         transform: 'translateY(-2px)'
@@ -366,14 +336,7 @@ const LeadCard = ({ lead }) => {
           sx={{ mb: 2 }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-                fontSize: { xs: '0.75rem', md: '0.8rem' },
-                mr: 1
-              }}
-            >
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: { xs: '0.75rem', md: '0.8rem' }, mr: 1 }}>
               Source:
             </Typography>
             <Chip
@@ -471,13 +434,13 @@ const LeadCard = ({ lead }) => {
         </Collapse>
       </CardContent>
 
-      {/* Actions */}
       <CardActions sx={{
         px: { xs: 2, md: 2.5 },
         py: { xs: 1.5, md: 2 },
         bgcolor: 'rgba(0, 0, 0, 0.02)',
         borderTop: '1px solid rgba(0, 0, 0, 0.05)',
-        gap: 1
+        gap: 1,
+        justifyContent: 'space-between'
       }}>
         <Button
           size="small"
@@ -498,20 +461,47 @@ const LeadCard = ({ lead }) => {
 
         <Button
           size="small"
-          onClick={handleExpandClick}
+          onClick={() => setExpanded(!expanded)}
           endIcon={expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           sx={{
-            borderRadius: 2,
-            textTransform: 'none',
-            fontSize: { xs: '0.75rem', md: '0.875rem' },
-            px: { xs: 1.5, md: 2 },
-            py: 0.75,
-            ml: 'auto'
+            color: 'text.secondary',
+            '&:hover': {
+              bgcolor: 'rgba(0, 0, 0, 0.04)'
+            }
           }}
         >
           {expanded ? "Show Less" : "Show More"}
         </Button>
       </CardActions>
+
+      {/* Verification Badge */}
+      <Badge
+        sx={{
+          position: 'absolute',
+          top: -8,
+          right: 16,
+          zIndex: 1
+        }}
+        badgeContent={
+          <Tooltip title={`Verification Score: ${lead.verificationScore}%`}>
+            <Avatar
+              sx={{
+                width: 32,
+                height: 32,
+                bgcolor: lead.verificationScore >= 75 ? 'success.main' :
+                         lead.verificationScore >= 50 ? 'primary.main' :
+                         lead.verificationScore >= 25 ? 'warning.main' : 'error.main',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                border: '2px solid white'
+              }}
+            >
+              <VerifiedIcon sx={{ fontSize: '1.1rem' }} />
+            </Avatar>
+          </Tooltip>
+        }
+      >
+        <Box sx={{ width: 1, height: 1 }} />
+      </Badge>
     </Card>
   );
 };
