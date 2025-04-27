@@ -104,7 +104,7 @@ const HomePage = () => {
         <Paper elevation={24} sx={{ borderRadius: 4, py: { xs: 2, md: 3 } }}>
           <Grid container>
             <Grid item xs={12} md={4} sx={{
-              p: { xs: 2, md: 3 },
+              p: { xs: 2, md: 3 }, // Consistent padding
               textAlign: 'center',
               borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
               borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
@@ -117,17 +117,28 @@ const HomePage = () => {
               </Typography>
             </Grid>
             <Grid item xs={12} md={4} sx={{
-              p: 3,
+              p: { xs: 2, md: 3 }, // Consistent padding
               textAlign: 'center',
               borderRight: { md: '1px solid rgba(0,0,0,0.1)' },
               borderBottom: { xs: '1px solid rgba(0,0,0,0.1)', md: 'none' }
             }}>
-              <Typography variant="h3" component="div" color="primary" fontWeight="bold">50+</Typography>
-              <Typography variant="subtitle1">Business Categories</Typography>
+              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}> {/* Added responsive font size */}
+                50+
+              </Typography>
+              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}> {/* Added responsive font size */}
+                Business Categories
+              </Typography>
             </Grid>
-            <Grid item xs={12} md={4} sx={{ p: 3, textAlign: 'center' }}>
-              <Typography variant="h3" component="div" color="primary" fontWeight="bold">100%</Typography>
-              <Typography variant="subtitle1">Verified Information</Typography>
+            <Grid item xs={12} md={4} sx={{
+              p: { xs: 2, md: 3 }, // Consistent padding
+              textAlign: 'center'
+            }}>
+              <Typography variant="h3" component="div" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}> {/* Added responsive font size */}
+                100%
+              </Typography>
+              <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}> {/* Added responsive font size */}
+                Verified Information
+              </Typography>
             </Grid>
           </Grid>
         </Paper>
