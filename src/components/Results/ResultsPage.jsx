@@ -18,7 +18,12 @@ import {
   Stack,
   Divider,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -28,10 +33,12 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import StoreIcon from '@mui/icons-material/Store';
 import LoginIcon from '@mui/icons-material/Login';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import GoogleIcon from '@mui/icons-material/Google';
 import LeadCard from './LeadCard';
 import { businessSectors, locations, mockLeads } from '../../data/mockLeads';
 import apiService from '../../services/apiService';
 import { useAuth } from '../../contexts/AuthContext';
+import { createSheet, exportLeadsToSheet, isSignedIn, signIn } from '../../services/googleSheetsService';
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -335,87 +342,168 @@ const ResultsPage = () => {
     }
   };
 
+  // State for Google Sheets export dialog
+  const [openGoogleDialog, setOpenGoogleDialog] = useState(false);
+  const [exportOption, setExportOption] = useState('csv');
+  const [googleSheetsError, setGoogleSheetsError] = useState(null);
+
   const handleExportToSheets = async () => {
     try {
       setLoading(true);
 
-      // Always create a CSV file for download
-      console.log('Creating CSV file for download.');
+      if (exportOption === 'csv' || !isSignedIn()) {
+        // Export to CSV file
+        console.log('Creating CSV file for download.');
 
-      // Create CSV content
-      const headers = [
-        'Business Name',
-        'Business Type',
-        'Owner Name',
-        'Email',
-        'Phone',
-        'Social Media',
-        'Address',
-        'Description',
-        'Verification Score'
-      ];
+        // Create CSV content
+        const headers = [
+          'Business Name',
+          'Business Type',
+          'Owner Name',
+          'Email',
+          'Phone',
+          'Social Media',
+          'Address',
+          'Description',
+          'Verification Score'
+        ];
 
-      const rows = leads.map(lead => [
-        lead.businessName,
-        lead.businessType,
-        lead.ownerName || '',
-        lead.contactDetails.email || '',
-        lead.contactDetails.phone || '',
-        Object.values(lead.contactDetails.socialMedia || {}).join(', '),
-        lead.address || '',
-        lead.description || '',
-        lead.verificationScore || 0
-      ]);
+        const rows = leads.map(lead => [
+          lead.businessName,
+          lead.businessType,
+          lead.ownerName || '',
+          lead.contactDetails.email || '',
+          lead.contactDetails.phone || '',
+          Object.values(lead.contactDetails.socialMedia || {}).join(', '),
+          lead.address || '',
+          lead.description || '',
+          lead.verificationScore || 0
+        ]);
 
-      // Combine headers and rows
-      const csvContent = [
-        headers.join(','),
-        ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-      ].join('\n');
+        // Combine headers and rows
+        const csvContent = [
+          headers.join(','),
+          ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        ].join('\n');
 
-      // Create a blob and download link
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `Lead_Generation_${sector}_in_${locationFilter}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        // Create a blob and download link
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Lead_Generation_${sector}_in_${locationFilter}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
-      // Show success message
-      setSnackbarMessage('Leads exported to CSV file successfully!');
-      setSnackbarSeverity('success');
-      setOpenSnackbar(true);
+        // Show success message
+        setSnackbarMessage('Leads exported to CSV file successfully!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
 
-      // Save the export to the user's history
-      const userId = 'demo-user'; // Replace with actual user ID if available
-      try {
-        await apiService.saveExport(
-          userId,
-          sector,
-          locationFilter,
-          leads.length,
-          'Local CSV Export'
-        );
-      } catch (saveError) {
-        console.error('Error saving export history:', saveError);
-        // Optionally show a warning if saving history fails but download succeeded
-        setSnackbarMessage('Leads exported to CSV, but failed to save history.');
-        setSnackbarSeverity('warning');
-        setOpenSnackbar(true); // Re-open snackbar with warning
+        // Save the export to the user's history
+        const userId = 'demo-user'; // Replace with actual user ID if available
+        try {
+          await apiService.saveExport(
+            userId,
+            sector,
+            locationFilter,
+            leads.length,
+            'Local CSV Export'
+          );
+        } catch (saveError) {
+          console.error('Error saving export history:', saveError);
+          // Optionally show a warning if saving history fails but download succeeded
+          setSnackbarMessage('Leads exported to CSV, but failed to save history.');
+          setSnackbarSeverity('warning');
+          setOpenSnackbar(true); // Re-open snackbar with warning
+        }
+      } else {
+        // Export to Google Sheets
+        try {
+          console.log('Exporting to Google Sheets...');
+
+          // Check if user is signed in to Google
+          if (!isSignedIn()) {
+            console.log('User not signed in to Google, requesting sign in...');
+            await signIn();
+          }
+
+          // Create a new Google Sheet
+          const sheetTitle = `Lead Generation - ${sector} in ${locationFilter} - ${new Date().toLocaleDateString()}`;
+          console.log('Creating new Google Sheet:', sheetTitle);
+          const sheet = await createSheet(sheetTitle);
+
+          if (!sheet || !sheet.spreadsheetId) {
+            throw new Error('Failed to create Google Sheet');
+          }
+
+          console.log('Sheet created with ID:', sheet.spreadsheetId);
+
+          // Export leads to the sheet
+          await exportLeadsToSheet(leads, sheet.spreadsheetId);
+
+          // Show success message with link to the sheet
+          const sheetUrl = `https://docs.google.com/spreadsheets/d/${sheet.spreadsheetId}`;
+          console.log('Leads exported successfully to:', sheetUrl);
+
+          // Save the export to the user's history
+          const userId = 'demo-user'; // Replace with actual user ID if available
+          try {
+            await apiService.saveExport(
+              userId,
+              sector,
+              locationFilter,
+              leads.length,
+              sheetUrl
+            );
+          } catch (saveError) {
+            console.error('Error saving export history:', saveError);
+          }
+
+          // Open the sheet in a new tab
+          window.open(sheetUrl, '_blank');
+
+          setSnackbarMessage('Leads exported to Google Sheets successfully!');
+          setSnackbarSeverity('success');
+          setOpenSnackbar(true);
+        } catch (googleError) {
+          console.error('Error exporting to Google Sheets:', googleError);
+          setGoogleSheetsError(googleError.message || 'Failed to export to Google Sheets');
+          setOpenGoogleDialog(true);
+
+          // Fallback to CSV export
+          setExportOption('csv');
+          handleExportToSheets();
+        }
       }
-
     } catch (error) {
-      // Catch errors specifically related to CSV generation/download
-      console.error('Error exporting leads to CSV:', error);
-      setSnackbarMessage('Failed to export leads to CSV. Please try again.');
+      // Catch errors specifically related to export
+      console.error('Error exporting leads:', error);
+      setSnackbarMessage('Failed to export leads. Please try again.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle export option change
+  const handleExportOptionChange = (option) => {
+    setExportOption(option);
+    if (option === 'google' && !isSignedIn()) {
+      // If Google Sheets is selected but user is not signed in, show dialog
+      setOpenGoogleDialog(true);
+    } else {
+      handleExportToSheets();
+    }
+  };
+
+  // Handle Google Sheets dialog close
+  const handleGoogleDialogClose = () => {
+    setOpenGoogleDialog(false);
+    setGoogleSheetsError(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -448,9 +536,9 @@ const ResultsPage = () => {
           Back to Search
         </Button>
 
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', sm: 'row' }, 
+        <Box sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           alignItems: { xs: 'flex-start', sm: 'center' },
           justifyContent: 'space-between',
           gap: { xs: 1, sm: 2 },
@@ -468,8 +556,8 @@ const ResultsPage = () => {
             Search Results
           </Typography>
 
-          <Box sx={{ 
-            display: 'flex', 
+          <Box sx={{
+            display: 'flex',
             alignItems: 'center',
             gap: 1.5,
             flexWrap: 'wrap'
@@ -723,9 +811,9 @@ const ResultsPage = () => {
             </Button>
           </Box>
         ) : loading ? (
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
             alignItems: 'center',
             py: 8,
             bgcolor: 'rgba(255, 255, 255, 0.8)',
@@ -738,9 +826,9 @@ const ResultsPage = () => {
             </Typography>
           </Box>
         ) : error ? (
-          <Alert 
-            severity="error" 
-            sx={{ 
+          <Alert
+            severity="error"
+            sx={{
               mt: 4,
               borderRadius: 2,
               boxShadow: '0 2px 8px rgba(211, 47, 47, 0.1)'
@@ -749,9 +837,9 @@ const ResultsPage = () => {
             {error}
           </Alert>
         ) : leads.length === 0 ? (
-          <Alert 
+          <Alert
             severity="info"
-            sx={{ 
+            sx={{
               mt: 4,
               borderRadius: 2,
               boxShadow: '0 2px 8px rgba(2, 136, 209, 0.1)'
@@ -783,33 +871,64 @@ const ResultsPage = () => {
                 Lead Results ({leads.length})
               </Typography>
 
-              <Button
-                variant="contained"
-                startIcon={<FileDownloadIcon />}
-                onClick={handleExportToSheets}
-                disabled={loading || leads.length === 0}
-                sx={{
-                  borderRadius: 2,
-                  px: { xs: 2, md: 3 },
-                  py: { xs: 1, md: 1.2 },
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  fontSize: { xs: '0.875rem', md: '1rem' },
-                  boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
-                  background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
-                  '&:hover': {
-                    boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)',
-                  }
-                }}
-              >
-                {loading ? 'Exporting...' : 'Export to Google Sheets'}
-              </Button>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  variant="contained"
+                  startIcon={<FileDownloadIcon />}
+                  onClick={() => {
+                    setExportOption('csv');
+                    handleExportToSheets();
+                  }}
+                  disabled={loading || leads.length === 0}
+                  sx={{
+                    borderRadius: 2,
+                    px: { xs: 1.5, md: 2 },
+                    py: { xs: 1, md: 1.2 },
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
+                    boxShadow: '0 4px 12px rgba(46, 125, 50, 0.2)',
+                    background: 'linear-gradient(45deg, #2e7d32 30%, #60ad5e 90%)',
+                    '&:hover': {
+                      boxShadow: '0 6px 16px rgba(46, 125, 50, 0.3)',
+                    }
+                  }}
+                >
+                  {loading && exportOption === 'csv' ? 'Exporting...' : 'Export to CSV'}
+                </Button>
+
+                <Button
+                  variant="contained"
+                  startIcon={<GoogleIcon />}
+                  onClick={() => {
+                    setExportOption('google');
+                    handleExportOptionChange('google');
+                  }}
+                  disabled={loading || leads.length === 0}
+                  sx={{
+                    borderRadius: 2,
+                    px: { xs: 1.5, md: 2 },
+                    py: { xs: 1, md: 1.2 },
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                    bgcolor: '#4285F4',
+                    '&:hover': {
+                      bgcolor: '#3367D6',
+                      boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)',
+                    }
+                  }}
+                >
+                  {loading && exportOption === 'google' ? 'Exporting...' : 'Export to Google Sheets'}
+                </Button>
+              </Box>
             </Box>
 
-            <Grid 
-              container 
-              spacing={{ xs: 2, sm: 3, md: 4 }} 
-              sx={{ 
+            <Grid
+              container
+              spacing={{ xs: 2, sm: 3, md: 4 }}
+              sx={{
                 mt: { xs: 0.5, md: 1 },
                 mx: { xs: -1, sm: -2 },
                 width: { xs: 'calc(100% + 16px)', sm: 'calc(100% + 32px)' }
@@ -824,16 +943,84 @@ const ResultsPage = () => {
           </>
         )}
 
+        {/* Google Sheets Export Dialog */}
+        <Dialog
+          open={openGoogleDialog}
+          onClose={handleGoogleDialogClose}
+          aria-labelledby="google-sheets-dialog-title"
+          aria-describedby="google-sheets-dialog-description"
+          PaperProps={{
+            sx: {
+              borderRadius: 3,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+              maxWidth: 500
+            }
+          }}
+        >
+          <DialogTitle id="google-sheets-dialog-title" sx={{ pb: 1 }}>
+            {googleSheetsError ? 'Google Sheets Export Error' : 'Export to Google Sheets'}
+          </DialogTitle>
+          <DialogContent>
+            {googleSheetsError ? (
+              <DialogContentText id="google-sheets-dialog-description" sx={{ color: 'error.main' }}>
+                {googleSheetsError}
+                <br /><br />
+                Please try again or use CSV export instead.
+              </DialogContentText>
+            ) : (
+              <DialogContentText id="google-sheets-dialog-description">
+                You need to sign in with your Google account to export leads to Google Sheets.
+                <br /><br />
+                This will allow the app to create a new spreadsheet in your Google Drive.
+              </DialogContentText>
+            )}
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 3 }}>
+            <Button
+              onClick={handleGoogleDialogClose}
+              variant="outlined"
+              sx={{ borderRadius: 2 }}
+            >
+              Cancel
+            </Button>
+            {!googleSheetsError && (
+              <Button
+                onClick={async () => {
+                  try {
+                    await signIn();
+                    handleGoogleDialogClose();
+                    handleExportToSheets();
+                  } catch (error) {
+                    console.error('Google Sign In Error:', error);
+                    setGoogleSheetsError('Failed to sign in with Google. Please try again.');
+                  }
+                }}
+                variant="contained"
+                startIcon={<GoogleIcon />}
+                sx={{
+                  borderRadius: 2,
+                  bgcolor: '#4285F4',
+                  '&:hover': {
+                    bgcolor: '#3367D6',
+                  }
+                }}
+              >
+                Sign in with Google
+              </Button>
+            )}
+          </DialogActions>
+        </Dialog>
+
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}
           onClose={handleCloseSnackbar}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
-          <Alert 
-            onClose={handleCloseSnackbar} 
-            severity={snackbarSeverity} 
-            sx={{ 
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbarSeverity}
+            sx={{
               width: '100%',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
               borderRadius: 2
