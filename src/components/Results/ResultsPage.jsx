@@ -454,13 +454,39 @@ const ResultsPage = () => {
   };
 
   // Handle export option change
-  const handleExportOptionChange = (option) => {
+  const handleExportOptionChange = async (option) => {
     setExportOption(option);
-    if (option === 'google' && !isSignedIn()) {
-      // If Google Sheets is selected but user is not signed in, show dialog
-      setOpenGoogleDialog(true);
-    } else {
+
+    try {
+      if (option === 'google') {
+        console.log('Google Sheets export selected');
+
+        // Check if Google Sheets API is available
+        if (typeof window.gapi === 'undefined' || !window.gapi.client) {
+          console.warn('Google API client not available, showing dialog');
+          setGoogleSheetsError('Google Sheets API not initialized. Please try CSV export instead.');
+          setOpenGoogleDialog(true);
+          return;
+        }
+
+        // Check if user is signed in
+        if (!isSignedIn()) {
+          console.log('User not signed in to Google, showing dialog');
+          setOpenGoogleDialog(true);
+          return;
+        }
+      }
+
+      // Proceed with export
       handleExportToSheets();
+    } catch (error) {
+      console.error('Error in export option change:', error);
+      setSnackbarMessage('Error preparing export: ' + error.message);
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+
+      // Fallback to CSV
+      setExportOption('csv');
     }
   };
 

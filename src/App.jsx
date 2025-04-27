@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, Snackbar, Alert } from '@mui/material';
+import { initGoogleSheetsAPI } from './services/googleSheetsService';
 
 // Components
 import Header from './components/common/Header';
