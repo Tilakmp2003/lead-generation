@@ -36,7 +36,14 @@ const searchLeads = async (sector, location, options = {}) => {
 
     const data = await response.json();
     // Handle both response formats (data.leads or data.data)
-    return data.leads || data.data || [];
+    const leads = data.leads || data.data || [];
+
+    // Filter out leads without either a phone number or an email
+    return leads.filter(lead => {
+      // Check if lead has either a phone number or an email
+      return (lead.contactDetails?.phone && lead.contactDetails.phone.trim() !== '') ||
+             (lead.contactDetails?.email && lead.contactDetails.email.trim() !== '');
+    });
   } catch (error) {
     console.error('API Error:', error);
     throw new Error('Error searching leads: ' + error.message);

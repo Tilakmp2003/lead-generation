@@ -220,10 +220,16 @@ const ResultsPage = () => {
       description: lead.description || 'No description available'
     }));
 
-    // Filter by verification score
-    const filteredLeads = fallbackLeads.filter(lead =>
-      lead.verificationScore >= minVerificationScore
-    );
+    // Filter by verification score and contact information
+    const filteredLeads = fallbackLeads.filter(lead => {
+      // Check if lead has either a phone number or an email
+      const hasValidContact =
+        (lead.contactDetails?.phone && lead.contactDetails.phone.trim() !== '') ||
+        (lead.contactDetails?.email && lead.contactDetails.email.trim() !== '');
+
+      // Only include leads with valid contact info and meeting verification score threshold
+      return hasValidContact && lead.verificationScore >= minVerificationScore;
+    });
 
     // Sort leads
     const sortedLeads = sortLeads(filteredLeads, sortBy);
@@ -317,11 +323,17 @@ const ResultsPage = () => {
   const handleVerificationScoreChange = (event) => {
     setMinVerificationScore(event.target.value);
 
-    // Re-filter the leads based on the new verification score
+    // Re-filter the leads based on the new verification score and contact requirements
     if (leads.length > 0) {
-      const filteredLeads = leads.filter(lead =>
-        lead.verificationScore >= event.target.value
-      );
+      const filteredLeads = leads.filter(lead => {
+        // Check if lead has either a phone number or an email
+        const hasValidContact =
+          (lead.contactDetails?.phone && lead.contactDetails.phone.trim() !== '') ||
+          (lead.contactDetails?.email && lead.contactDetails.email.trim() !== '');
+
+        // Only include leads with valid contact info and meeting verification score threshold
+        return hasValidContact && lead.verificationScore >= event.target.value;
+      });
       setLeads(sortLeads(filteredLeads, sortBy));
     }
   };
@@ -909,7 +921,12 @@ const ResultsPage = () => {
                     key={lead.id || index}
                     sx={{
                       display: 'flex',
-                      justifyContent: 'center'
+                      height: '100%',
+                      // Ensure consistent sizing
+                      '& > *': {
+                        width: '100%',
+                        height: '100%'
+                      }
                     }}
                   >
                     <LeadCard lead={lead} />
@@ -927,11 +944,13 @@ const ResultsPage = () => {
         onClose={handleGoogleDialogClose}
         aria-labelledby="google-sheets-dialog-title"
         aria-describedby="google-sheets-dialog-description"
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-            maxWidth: 500
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 3,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+              maxWidth: 500
+            }
           }
         }}
       >

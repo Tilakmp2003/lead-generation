@@ -146,9 +146,11 @@ const LeadCard = ({ lead }) => {
         boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
         transition: 'all 0.3s ease',
         mx: 'auto',
-        width: '100%', // Keep width 100%
-        // Remove maxWidth constraint for sm and up
-        // maxWidth: { xs: '100%', sm: '450px' }, 
+        width: '100%',
+        // Set fixed height for consistent card sizing
+        minHeight: { xs: 'auto', sm: '500px' },
+        // Set fixed width for consistent card sizing on larger screens
+        maxWidth: { xs: '100%', sm: '100%', md: '100%' },
         '&:hover': {
           transform: 'translateY(-8px)',
           boxShadow: '0 12px 32px rgba(0,0,0,0.12)'
